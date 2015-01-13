@@ -7,5 +7,5 @@
 
 2. Initialize and start gerrit using volume created before.
 
- `$ docker run --volumes-from gerrit_volume -p 8080:8080 -p 29418:29418 gerrit`
+ `$ docker run --volumes-from gerrit_volume -p 8080:8080 -p 29418:29418 openfrontier/gerrit`
  
