@@ -16,13 +16,21 @@ RUN curl -L https://gerrit-releases.storage.googleapis.com/gerrit-${GERRIT_VERSI
 #only for local test
 #COPY gerrit-${GERRIT_VERSION}.war $GERRIT_WAR
 
-COPY gerrit*.sh ${GERRIT_HOME}/
-RUN chown ${GERRIT_USER}:${GERRIT_USER} ${GERRIT_HOME}/gerrit*.sh \
+COPY gerrit-entrypoint.sh ${GERRIT_HOME}/
+COPY gerrit-start.sh ${GERRIT_HOME}/
+
+RUN chown -R ${GERRIT_USER}:${GERRIT_USER} $GERRIT_HOME \
  && chmod +x ${GERRIT_HOME}/gerrit*.sh
 
 USER $GERRIT_USER
 
+#A directory has to be created before a volume is mounted to it.
+#So gerrit user can own this directory.
 RUN mkdir -p $GERRIT_SITE
+
+#Gerrit site directory is a volume, so configuration and repositories
+#can be persisted and survive image upgrades.
+VOLUME $GERRIT_SITE
 
 #RUN java -jar $GERRIT_WAR init --batch -d $GERRIT_SITE
 ENTRYPOINT ["/var/gerrit/gerrit-entrypoint.sh"]
