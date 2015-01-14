@@ -12,6 +12,8 @@ if [ "$1" = '/var/gerrit/gerrit-start.sh' ]; then
       echo "Something wrong..."
       cat $GERRIT_SITE/logs/error_log
     fi
+    #Customize gerrit.config
+    [ -z $CANONICAL_WEBURL ] || git config -f $GERRIT_SITE/etc/gerrit.config gerrit.canonicalWebUrl $CANONICAL_WEBURL
   fi
 fi
 exec "$@"
