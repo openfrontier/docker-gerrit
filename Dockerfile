@@ -19,7 +19,7 @@ RUN curl -L https://gerrit-releases.storage.googleapis.com/gerrit-${GERRIT_VERSI
 COPY gerrit-entrypoint.sh ${GERRIT_HOME}/
 COPY gerrit-start.sh ${GERRIT_HOME}/
 
-RUN chown -R ${GERRIT_USER}:${GERRIT_USER} $GERRIT_HOME \
+RUN chown -R ${GERRIT_USER}:${GERRIT_USER} $GERRIT_HOME/gerrit*.sh \
  && chmod +x ${GERRIT_HOME}/gerrit*.sh
 
 USER $GERRIT_USER
