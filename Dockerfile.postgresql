@@ -1,0 +1,15 @@
+FROM roverwolf/centos7
+
+MAINTAINER test@docker.com
+
+RUN yum install postgresql-server -y $$ yum clean all
+
+USER postgres
+
+RUN /usr/bin/initdb -D /var/lib/pgsql/data && rm -rf /var/lib/pgsql/data/*
+
+EXPOSE 5432
+
+VOLUME  ["/var/lib/pgsql/data"]
+
+CMD ["/usr/bin/postgres", "-D", "/var/lib/pgsql/data"]
