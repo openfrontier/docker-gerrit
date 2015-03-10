@@ -7,6 +7,13 @@
 
 2. Open your browser to http://<dockerd host ip>:9000
 
+## Start container with gerrit interactive installer.
+1. Initialize and start gerrit.
+ `$ docker run -it -p 8080:8080 -p 29418:29418 openfrontier/gerrit`
+
+2. Open another console.
+ `$ docker restart <container-name>`
+
 ## Use another container as the gerrit site storage.
 1. Create a volume container.
 
@@ -26,9 +33,11 @@
  `$ docker run -d -v ~/gerrit_volume:/var/gerrit/review_site -p 8080:8080 -p 29418:29418 openfrontier/gerrit`
 
 ## Stop/restart gerrit service within the container.
- `$ docker exec $gerrit-container-name  /var/gerrit/review_site/bin/gerrit.sh stop`
- `$ docker exec $gerrit-container-name  /var/gerrit/review_site/bin/gerrit.sh start`
- `$ docker exec $gerrit-container-name  /var/gerrit/review_site/bin/gerrit.sh restart`
+ `$ docker exec <container-name>  /var/gerrit/review_site/bin/gerrit.sh stop`
+
+ `$ docker exec <container-name>  /var/gerrit/review_site/bin/gerrit.sh start`
+
+ `$ docker exec <container-name>  /var/gerrit/review_site/bin/gerrit.sh restart`
 
 ## Sync timezone with the host server. 
  `$ docker run -d -p 8080:8080 -p 29418:29418 -v /etc/localtime:/etc/localtime:ro openfrontier/gerrit`
