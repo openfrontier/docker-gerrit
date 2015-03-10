@@ -25,5 +25,11 @@
 
  `$ docker run -d -v ~/gerrit_volume:/var/gerrit/review_site -p 8080:8080 -p 29418:29418 openfrontier/gerrit`
 
-## Issues 
-1. Timezone is UTC.
+## Stop/restart gerrit service within the container.
+ `$ docker exec $gerrit-container-name  /var/gerrit/review_site/bin/gerrit.sh stop`
+ `$ docker exec $gerrit-container-name  /var/gerrit/review_site/bin/gerrit.sh start`
+ `$ docker exec $gerrit-container-name  /var/gerrit/review_site/bin/gerrit.sh restart`
+
+## Sync timezone with the host server. 
+ `$ docker run -d -p 8080:8080 -p 29418:29418 -v /etc/localtime:/etc/localtime:ro openfrontier/gerrit`
+
