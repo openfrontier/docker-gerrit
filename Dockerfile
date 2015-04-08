@@ -9,20 +9,23 @@ ENV GERRIT_WAR ${GERRIT_HOME}/gerrit.war
 ENV GERRIT_VERSION 2.9.4
 ENV GERRIT_USER gerrit2
 
-RUN useradd -m -d "$GERRIT_HOME" -u 1000 -U  -s /bin/bash $GERRIT_USER
+#RUN useradd -m -d "$GERRIT_HOME" -u 1000 -U  -s /bin/bash $GERRIT_USER
 
 #Download gerrit.war
-RUN curl -L https://gerrit-releases.storage.googleapis.com/gerrit-${GERRIT_VERSION}.war -o $GERRIT_WAR
+#RUN curl -L https://gerrit-releases.storage.googleapis.com/gerrit-${GERRIT_VERSION}.war -o $GERRIT_WAR
 #only for local test
-#COPY gerrit-${GERRIT_VERSION}.war $GERRIT_WAR
+COPY gerrit-${GERRIT_VERSION}.war $GERRIT_WAR
 
 COPY gerrit-entrypoint.sh ${GERRIT_HOME}/
 COPY gerrit-start.sh ${GERRIT_HOME}/
 
-RUN chown -R ${GERRIT_USER}:${GERRIT_USER} $GERRIT_HOME/gerrit*.sh \
- && chmod +x ${GERRIT_HOME}/gerrit*.sh
+#RUN chown -R ${GERRIT_USER}:${GERRIT_USER} $GERRIT_HOME/gerrit*.sh \
+# && chmod +x ${GERRIT_HOME}/gerrit*.sh
+RUN chmod +x ${GERRIT_HOME}/gerrit*.sh
 
-USER $GERRIT_USER
+#USER $GERRIT_USER
+
+#RUN java -jar $GERRIT_WAR init --batch --no-auto-start -d $GERRIT_SITE
 
 #A directory has to be created before a volume is mounted to it.
 #So gerrit user can own this directory.
