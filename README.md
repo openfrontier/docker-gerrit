@@ -9,9 +9,11 @@
 
 ## Start container with gerrit interactive installer.
 1. Initialize and start gerrit.
+
  `$ docker run -it -p 8080:8080 -p 29418:29418 openfrontier/gerrit`
 
 2. Open another console.
+
  `$ docker restart <container-name>`
 
 ## Use another container as the gerrit site storage.
@@ -32,12 +34,12 @@
 
  `$ docker run -d -v ~/gerrit_volume:/var/gerrit/review_site -p 8080:8080 -p 29418:29418 openfrontier/gerrit`
 
-## Stop/restart gerrit service within the container.
- `$ docker exec <container-name>  /var/gerrit/review_site/bin/gerrit.sh stop`
+## Run dockerized gerrit with dockerized postgresql.
 
- `$ docker exec <container-name>  /var/gerrit/review_site/bin/gerrit.sh start`
-
- `$ docker exec <container-name>  /var/gerrit/review_site/bin/gerrit.sh restart`
+    #Start postgres docker
+    docker run --name pg-gerrit -p 5432:5432 -e POSTGRES_USER=gerrit2 -e POSTGRES_PASSWORD=gerrit -e POSTGRES_DB=reviewdb -d postgres
+    #Start gerrit docker
+    docker run --name gerrit-site --link pg-gerrit:db -p 8080:8080 -p 29418:29418 WEBURL=http://your.site.url:8080 -e DATABASE_TYPE=postgresql -e AUTH_TYPE=LDAP -e LDAP_HOST=ldap-hostname -e LDAP_ACCOUNTBASE='ldap-basedn'  openfrontier/gerrit
 
 ## Sync timezone with the host server. 
  `$ docker run -d -p 8080:8080 -p 29418:29418 -v /etc/localtime:/etc/localtime:ro openfrontier/gerrit`

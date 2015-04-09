@@ -8,33 +8,36 @@ if [ "$1" = '/var/gerrit/gerrit-start.sh' ]; then
     java -jar $GERRIT_WAR init --batch --no-auto-start -d $GERRIT_SITE
   fi
 
-    #Customize gerrit.config
-    #mkdir $GERRIT_SITE/etc
+  #Customize gerrit.config
+  #mkdir $GERRIT_SITE/etc
 
-    #Section gerrit
-    [ -z $CANONICAL_WEBURL ] || git config -f $GERRIT_SITE/etc/gerrit.config gerrit.canonicalWebUrl $CANONICAL_WEBURL
+  #Section gerrit
+  [ -z $WEBURL ] || git config -f $GERRIT_SITE/etc/gerrit.config gerrit.canonicalWebUrl $WEBURL
 
-    #Section database
-    [ -z $DATABASE_TYPE ] || git config -f $GERRIT_SITE/etc/gerrit.config database.type $DATABASE_TYPE
+  #Section database
+  if [ $DATABASE_TYPE = 'postgresql' ]; then
+    git config -f $GERRIT_SITE/etc/gerrit.config database.type $DATABASE_TYPE
     [ -z $DB_PORT_5432_TCP_ADDR ] || git config -f $GERRIT_SITE/etc/gerrit.config database.hostname $DB_PORT_5432_TCP_ADDR
     [ -z $DB_PORT_5432_TCP_PORT ] || git config -f $GERRIT_SITE/etc/gerrit.config database.port $DB_PORT_5432_TCP_PORT
     [ -z $DB_ENV_POSTGRES_DB ] || git config -f $GERRIT_SITE/etc/gerrit.config database.database $DB_ENV_POSTGRES_DB
     [ -z $DB_ENV_POSTGRES_USER ] || git config -f $GERRIT_SITE/etc/gerrit.config database.username $DB_ENV_POSTGRES_USER
     [ -z $DB_ENV_POSTGRES_PASSWORD ] || git config -f $GERRIT_SITE/etc/secure.config database.password $DB_ENV_POSTGRES_PASSWORD
+  fi
 
-    #Section ldap
-    git config -f $GERRIT_SITE/etc/gerrit.config auth.type LDAP
-    git config -f $GERRIT_SITE/etc/gerrit.config ldap.server ldap://172.20.201.98
-    git config -f $GERRIT_SITE/etc/gerrit.config ldap.accountBase ou=People,dc=vdc,dc=trans-cosmos,dc=com,dc=cn
-    git config -f $GERRIT_SITE/etc/gerrit.config ldap.groupBase ou=gerrit,dc=vdc,dc=trans-cosmos,dc=com,dc=cn
+  #Section ldap
+  if [ $AUTH_TYPE = 'LDAP' ]; then
+    git config -f $GERRIT_SITE/etc/gerrit.config auth.type $AUTH_TYPE
+    git config -f $GERRIT_SITE/etc/gerrit.config ldap.server ldap://$LDAP_HOST
+    git config -f $GERRIT_SITE/etc/gerrit.config ldap.accountBase $LDAP_ACCOUNTBASE
+  fi
 
-    echo "Upgrading gerrit..."
-    java -jar $GERRIT_WAR init --batch -d $GERRIT_SITE
-    if [ $? -eq 0 ]; then
-      echo "Initializing OK."
-    else
-      echo "Something wrong..."
-      cat $GERRIT_SITE/logs/error_log
-    fi
+  echo "Upgrading gerrit..."
+  java -jar $GERRIT_WAR init --batch -d $GERRIT_SITE
+  if [ $? -eq 0 ]; then
+    echo "Upgrading is OK."
+  else
+    echo "Something wrong..."
+    cat $GERRIT_SITE/logs/error_log
+  fi
 fi
 exec "$@"
