@@ -2,7 +2,11 @@ FROM java:openjdk-7-jdk
 
 MAINTAINER zsx <thinkernel@gmail.com>
 
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y \
+ git \
+ libcgi-pm-perl \
+ gitweb \
+ && rm -rf /var/lib/apt/lists/*
 ENV GERRIT_HOME /var/gerrit
 ENV GERRIT_SITE ${GERRIT_HOME}/review_site
 ENV GERRIT_WAR ${GERRIT_HOME}/gerrit.war
