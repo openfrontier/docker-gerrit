@@ -3,7 +3,6 @@ FROM java:openjdk-7-jdk
 MAINTAINER zsx <thinkernel@gmail.com>
 
 RUN apt-get update && apt-get install -y \
- git \
  libcgi-pm-perl \
  gitweb \
  && rm -rf /var/lib/apt/lists/*
