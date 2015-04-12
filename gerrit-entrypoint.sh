@@ -6,6 +6,8 @@ if [ "$1" = '/var/gerrit/gerrit-start.sh' ]; then
   if [ -z "$(ls -A "$GERRIT_SITE")" ]; then
     echo "First time initialize gerrit..."
     java -jar $GERRIT_WAR init --batch --no-auto-start -d $GERRIT_SITE
+    #All-Projects.git must be removed here in order to be recreated at the secondary init below.
+    rm -rf $GERRIT_SITE/git/All-Projects.git 
   fi
 
   #Customize gerrit.config
