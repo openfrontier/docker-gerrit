@@ -25,7 +25,7 @@
 
  `$ docker run -d -v ~/gerrit_volume:/var/gerrit/review_site -p 8080:8080 -p 29418:29418 openfrontier/gerrit`
 
-## Run dockerized gerrit with dockerized postgresql.
+## Run dockerized gerrit with dockerized PostgreSQL and OpenLDAP.
 
     #Start postgres docker
     docker run --name pg-gerrit -p 5432:5432 -e POSTGRES_USER=gerrit2 -e POSTGRES_PASSWORD=gerrit -e POSTGRES_DB=reviewdb -d postgres
