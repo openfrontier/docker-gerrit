@@ -29,8 +29,11 @@ if [ "$1" = '/var/gerrit/gerrit-start.sh' ]; then
   #Section ldap
   if [ $AUTH_TYPE = 'LDAP' ]; then
     git config -f $GERRIT_SITE/etc/gerrit.config auth.type $AUTH_TYPE
-    git config -f $GERRIT_SITE/etc/gerrit.config ldap.server ldap://$LDAP_HOST
-    git config -f $GERRIT_SITE/etc/gerrit.config ldap.accountBase $LDAP_ACCOUNTBASE
+    [ -z $LDAP_HOST ] || git config -f $GERRIT_SITE/etc/gerrit.config ldap.server ldap://$LDAP_HOST
+    [ -z $LDAP_ACCOUNTBASE ] || git config -f $GERRIT_SITE/etc/gerrit.config ldap.accountBase $LDAP_ACCOUNTBASE
+    [ -z $LDAP_GROUPBASE ] || git config -f $GERRIT_SITE/etc/gerrit.config ldap.groupBase $LDAP_GROUPBASE
+    [ -z $LDAP_USER ] || git config -f $GERRIT_SITE/etc/gerrit.config ldap.user $LDAP_USER
+    [ -z $LDAP_PASSWORD ] || git config -f $GERRIT_SITE/etc/gerrit.config ldap.password $LDAP_PASSWORD
   fi
 
   echo "Upgrading gerrit..."
