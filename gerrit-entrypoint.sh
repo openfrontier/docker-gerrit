@@ -6,12 +6,11 @@ if [ "$1" = '/var/gerrit/gerrit-start.sh' ]; then
   if [ -z "$(ls -A "$GERRIT_SITE")" ]; then
     echo "First time initialize gerrit..."
     java -jar "${GERRIT_WAR}" init --batch --no-auto-start -d "${GERRIT_SITE}"
-    #All-Projects.git must be removed here in order to be recreated at the secondary init below.
-    rm -rf "${GERRIT_SITE}/git/*"
+    #All git repositories must be removed in order to be recreated at the secondary init below.
+    rm -rf "${GERRIT_SITE}/git"
   fi
 
   #Customize gerrit.config
-  #mkdir "${GERRIT_SITE}/etc"
 
   #Section gerrit
   [ -z "${WEBURL}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" gerrit.canonicalWebUrl "${WEBURL}"
@@ -36,15 +35,15 @@ if [ "$1" = '/var/gerrit/gerrit-start.sh' ]; then
     [ -z "${LDAP_PASSWORD}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.password "${LDAP_PASSWORD}"
   fi
 
-  #Section Sendmail
-  if [ -z $SMTP ]; then
-    git config -f $GERRIT_SITE/etc/gerrit.config sendemail.enable false
+  #Section sendemail
+  if [ -z "${SMTP_SERVER}" ]; then
+    git config -f "${GERRIT_SITE}/etc/gerrit.config" sendemail.enable false
   else
-    git config -f $GERRIT_SITE/etc/gerrit.config sendemail.smtpServer $SMTP
+    git config -f "${GERRIT_SITE}/etc/gerrit.config" sendemail.smtpServer "${SMTP_SERVER}"
   fi
 
   #Section plugins
-  git config -f $GERRIT_SITE/etc/gerrit.config plugins.allowRemoteAdmin true
+  git config -f "${GERRIT_SITE}/etc/gerrit.config" plugins.allowRemoteAdmin true
 
   echo "Upgrading gerrit..."
   java -jar "${GERRIT_WAR}" init --batch -d "${GERRIT_SITE}"
