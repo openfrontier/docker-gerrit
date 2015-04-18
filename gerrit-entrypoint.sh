@@ -7,7 +7,7 @@ if [ "$1" = '/var/gerrit/gerrit-start.sh' ]; then
     echo "First time initialize gerrit..."
     java -jar $GERRIT_WAR init --batch --no-auto-start -d $GERRIT_SITE
     #All-Projects.git must be removed here in order to be recreated at the secondary init below.
-    rm -rf $GERRIT_SITE/git/All-Projects.git 
+    rm -rf $GERRIT_SITE/git/*
   fi
 
   #Customize gerrit.config
@@ -32,6 +32,16 @@ if [ "$1" = '/var/gerrit/gerrit-start.sh' ]; then
     git config -f $GERRIT_SITE/etc/gerrit.config ldap.server ldap://$LDAP_HOST
     git config -f $GERRIT_SITE/etc/gerrit.config ldap.accountBase $LDAP_ACCOUNTBASE
   fi
+
+  #Section Sendmail
+  if [ -z $SMTP ]; then
+    git config -f $GERRIT_SITE/etc/gerrit.config sendemail.enable false
+  else
+    git config -f $GERRIT_SITE/etc/gerrit.config sendemail.smtpServer $SMTP
+  fi
+
+  #Section plugins
+  git config -f $GERRIT_SITE/etc/gerrit.config plugins.allowRemoteAdmin true
 
   echo "Upgrading gerrit..."
   java -jar $GERRIT_WAR init --batch -d $GERRIT_SITE
