@@ -27,12 +27,31 @@ if [ "$1" = '/var/gerrit/gerrit-start.sh' ]; then
 
   #Section ldap
   if [ "${AUTH_TYPE}" = 'LDAP' ]; then
-    git config -f "${GERRIT_SITE}/etc/gerrit.config" auth.type "${AUTH_TYPE}"
-    [ -z "${LDAP_HOST}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.server "ldap://${LDAP_HOST}"
-    [ -z "${LDAP_ACCOUNTBASE}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.accountBase "${LDAP_ACCOUNTBASE}"
-    [ -z "${LDAP_GROUPBASE}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.groupBase "${LDAP_GROUPBASE}"
-    [ -z "${LDAP_USER}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.user "${LDAP_USER}"
+    [ -z "${LDAP_HOST}" ] || LDAP_SERVER=$LDAP_HOST # to mantain compatibility with LDAP_HOST
+    [ -z "${LDAP_SERVER}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.server "ldap://${LDAP_SERVER}"
+    [ -z "${LDAP_SSLVERIFY}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.sslVerify "${LDAP_SSLVERIFY}"
+    [ -z "${LDAP_GROUPSVISIBLETOALL}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.groupsVisibleToAll "${LDAP_GROUPSVISIBLETOALL}"
+    [ -z "${LDAP_USERNAME}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.username "${LDAP_USERNAME}"
     [ -z "${LDAP_PASSWORD}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.password "${LDAP_PASSWORD}"
+    [ -z "${LDAP_REFERRAL}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.referral "${LDAP_REFERRAL}"
+    [ -z "${LDAP_READTIMEOUT}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.readTimeout "${LDAP_READTIMEOUT}"
+    [ -z "${LDAP_ACCOUNTBASE}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.accountBase "${LDAP_ACCOUNTBASE}"
+    [ -z "${LDAP_ACCOUNTSCOPE}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.accountScope "${LDAP_ACCOUNTSCOPE}"
+    [ -z "${LDAP_ACCOUNTPATTERN}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.accountPattern "${LDAP_ACCOUNTPATTERN}"
+    [ -z "${LDAP_ACCOUNTFULLNAME}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.accountFullName "${LDAP_ACCOUNTFULLNAME}"
+    [ -z "${LDAP_ACCOUNTEMAILADDRESS}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.accountEmailAddress "${LDAP_ACCOUNTEMAILADDRESS}"
+    [ -z "${LDAP_ACCOUNTSSHUSERNAME}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.accountSshUserName "${LDAP_ACCOUNTSSHUSERNAME}"
+    [ -z "${LDAP_ACCOUNTMEMBERFIELD}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.accountMemberField "${LDAP_ACCOUNTMEMBERFIELD}"
+    [ -z "${LDAP_FETCHMEMBEROFEAGERLY}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.fetchMemberOfEagerly "${LDAP_FETCHMEMBEROFEAGERLY}"
+    [ -z "${LDAP_GROUPBASE}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.groupBase "${LDAP_GROUPBASE}"
+    [ -z "${LDAP_GROUPSCOPE}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.groupScope "${LDAP_GROUPSCOPE}"
+    [ -z "${LDAP_GROUPPATTERN}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.groupPattern "${LDAP_GROUPPATTERN}"
+    [ -z "${LDAP_GROUPMEMBERPATTERN}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.groupMemberPattern "${LDAP_GROUPMEMBERPATTERN}"
+    [ -z "${LDAP_GROUPNAME}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.groupName "${LDAP_GROUPNAME}"
+    [ -z "${LDAP_LOCALUSERNAMETOLOWERCASE}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.localUsernameToLowerCase "${LDAP_LOCALUSERNAMETOLOWERCASE}"
+    [ -z "${LDAP_AUTHENTICATION}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.authentication "${LDAP_AUTHENTICATION}"
+    [ -z "${LDAP_USECONNECTIONPOOLING}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.useConnectionPooling "${LDAP_USECONNECTIONPOOLING}"
+    [ -z "${LDAP_CONNECTTIMEOUT}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.connectTimeout "${LDAP_CONNECTTIMEOUT}"
   fi
 
   #Section sendemail
