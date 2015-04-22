@@ -57,7 +57,6 @@ if [ "$1" = '/var/gerrit/gerrit-start.sh' ]; then
 
   # section container
   [ -z "${JAVA_HEAPLIMIT}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" container.heapLimit "${JAVA_HEAPLIMIT}"
-  [ -z "${JAVA_JAVAHOME}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" container.javaHome "${JAVA_JAVAHOME}"
   [ -z "${JAVA_OPTIONS}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" container.javaOptions "${JAVA_OPTIONS}"
   [ -z "${JAVA_SLAVE}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" container.slave "${JAVA_SLAVE}"
 
