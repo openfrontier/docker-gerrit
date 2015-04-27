@@ -34,7 +34,11 @@
     docker run --name gerrit --link pg-gerrit:db -p 8080:8080 -p 29418:29418 WEBURL=http://<your.site.url>:8080 -e DATABASE_TYPE=postgresql -e AUTH_TYPE=LDAP -e LDAP_SERVER=<ldap-servername> -e LDAP_ACCOUNTBASE=<ldap-basedn>  openfrontier/gerrit
 
 ## Sample operational scripts
-   Sample scripts to creating or destroying gerrit docker are located at [openfrontier/gerrit-docker](https://github.com/openfrontier/gerrit-docker) project.
+   Sample scripts to create or destroy this Gerrit container are located at [openfrontier/gerrit-docker](https://github.com/openfrontier/gerrit-docker) project.
+
+   A Jenkins docker image with some sample scripts to integrate with this Gerrit image can be found [here](https://registry.hub.docker.com/u/openfrontier/jenkins/).
+
+   There's an [upper project](https://github.com/openfrontier/ci) which privdes sample scripts about how to use this image and a [Jenkins image](https://registry.hub.docker.com/u/openfrontier/jenkins/) to create a Gerrit-Jenkins integration environment.
 
 ## Sync timezone with the host server. 
    `docker run -d -p 8080:8080 -p 29418:29418 -v /etc/localtime:/etc/localtime:ro openfrontier/gerrit`
