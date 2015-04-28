@@ -70,6 +70,9 @@ if [ "$1" = '/var/gerrit/gerrit-start.sh' ]; then
   #Section plugins
   git config -f "${GERRIT_SITE}/etc/gerrit.config" plugins.allowRemoteAdmin true
 
+  #Section httpd
+  [ -z "${HTTPD_LISTENURL}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" httpd.listenUrl "${HTTPD_LISTENURL}"
+
   echo "Upgrading gerrit..."
   java -jar "${GERRIT_WAR}" init --batch -d "${GERRIT_SITE}"
   if [ $? -eq 0 ]; then
