@@ -37,7 +37,7 @@ if [ "$1" = '/var/gerrit/gerrit-start.sh' ]; then
     [ -z "${LDAP_REFERRAL}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.referral "${LDAP_REFERRAL}"
     [ -z "${LDAP_READTIMEOUT}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.readTimeout "${LDAP_READTIMEOUT}"
     [ -z "${LDAP_ACCOUNTBASE}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.accountBase "${LDAP_ACCOUNTBASE}"
-    [ -z "${LDAP_ACCOUNTSCOPE}" ] || git config -cd  "${GERRIT_SITE}/etc/gerrit.config" ldap.accountScope "${LDAP_ACCOUNTSCOPE}"
+    [ -z "${LDAP_ACCOUNTSCOPE}" ] || git config -f  "${GERRIT_SITE}/etc/gerrit.config" ldap.accountScope "${LDAP_ACCOUNTSCOPE}"
     [ -z "${LDAP_ACCOUNTPATTERN}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.accountPattern "${LDAP_ACCOUNTPATTERN}"
     [ -z "${LDAP_ACCOUNTFULLNAME}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.accountFullName "${LDAP_ACCOUNTFULLNAME}"
     [ -z "${LDAP_ACCOUNTEMAILADDRESS}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.accountEmailAddress "${LDAP_ACCOUNTEMAILADDRESS}"
