@@ -1,5 +1,13 @@
 # Gerrit Docker image
  The Gerrit code review system with PostgreSQL and OpenLDAP integration supported.
+
+## Versions
+ openfrontier/gerrit:latest -> 2.11
+
+ openfrontier/gerrit:2.10.x -> 2.10.4
+
+ openfrontier/gerrit:2.9.x -> 2.9.4
+
 ## Container Quickstart
   1. Initialize and start gerrit.
 
