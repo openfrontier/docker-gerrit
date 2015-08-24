@@ -25,6 +25,16 @@ if [ "$1" = '/var/gerrit/gerrit-start.sh' ]; then
     [ -z "${DB_ENV_POSTGRES_PASSWORD}" ] || git config -f "${GERRIT_SITE}/etc/secure.config" database.password "${DB_ENV_POSTGRES_PASSWORD}"
   fi
 
+  #Section database
+  if [ "${DATABASE_TYPE}" = 'mysql' ]; then
+    git config -f "${GERRIT_SITE}/etc/gerrit.config" database.type "${DATABASE_TYPE}"
+    [ -z "${DB_PORT_3306_TCP_ADDR}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" database.hostname "${DB_PORT_3306_TCP_ADDR}"
+    [ -z "${DB_PORT_3306_TCP_PORT}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" database.port "${DB_PORT_3306_TCP_PORT}"
+    [ -z "${DB_ENV_MYSQL_DB}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" database.database "${DB_ENV_MYSQL_DB}"
+    [ -z "${DB_ENV_MYSQL_USER}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" database.username "${DB_ENV_MYSQL_USER}"
+    [ -z "${DB_ENV_MYSQL_PASSWORD}" ] || git config -f "${GERRIT_SITE}/etc/secure.config" database.password "${DB_ENV_MYSQL_PASSWORD}"
+  fi
+
   #Section ldap
   if [ "${AUTH_TYPE}" = 'LDAP' ]; then
     git config -f "${GERRIT_SITE}/etc/gerrit.config" auth.type "${AUTH_TYPE}"
