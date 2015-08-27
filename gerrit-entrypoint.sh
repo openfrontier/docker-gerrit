@@ -75,7 +75,16 @@ if [ "$1" = '/var/gerrit/gerrit-start.sh' ]; then
     git config -f "${GERRIT_SITE}/etc/gerrit.config" sendemail.enable false
   else
     git config -f "${GERRIT_SITE}/etc/gerrit.config" sendemail.smtpServer "${SMTP_SERVER}"
+    if [ "smtp.gmail.com" = "${SMTP_SERVER}" ]; then
+      echo "gmail detected, using default port and encryption"
+      git config -f "${GERRIT_SITE}/etc/gerrit.config" sendemail.smtpServerPort 587
+      git config -f "${GERRIT_SITE}/etc/gerrit.config" sendemail.smtpEncryption tls
+    fi
+    [ -z "${SMTP_SERVER_PORT}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" sendemail.smtpServerPort "${SMTP_SERVER_PORT}"
+    [ -z "${SMTP_USER}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" sendemail.smtpUser "${SMTP_USER}"
+    [ -z "${SMTP_PASS}" ] || git config -f "${GERRIT_SITE}/etc/secure.config" sendemail.smtpPass "${SMTP_PASS}"
   fi
+
 
   #Section plugins
   git config -f "${GERRIT_SITE}/etc/gerrit.config" plugins.allowRemoteAdmin true
