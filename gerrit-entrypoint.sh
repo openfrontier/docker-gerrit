@@ -43,7 +43,7 @@ if [ "$1" = '/var/gerrit/gerrit-start.sh' ]; then
     [ -z "${LDAP_SSLVERIFY}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.sslVerify "${LDAP_SSLVERIFY}"
     [ -z "${LDAP_GROUPSVISIBLETOALL}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.groupsVisibleToAll "${LDAP_GROUPSVISIBLETOALL}"
     [ -z "${LDAP_USERNAME}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.username "${LDAP_USERNAME}"
-    [ -z "${LDAP_PASSWORD}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.password "${LDAP_PASSWORD}"
+    [ -z "${LDAP_PASSWORD}" ] || git config -f "${GERRIT_SITE}/etc/secure.config" ldap.password "${LDAP_PASSWORD}"
     [ -z "${LDAP_REFERRAL}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.referral "${LDAP_REFERRAL}"
     [ -z "${LDAP_READTIMEOUT}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.readTimeout "${LDAP_READTIMEOUT}"
     [ -z "${LDAP_ACCOUNTBASE}" ] || git config -f "${GERRIT_SITE}/etc/gerrit.config" ldap.accountBase "${LDAP_ACCOUNTBASE}"
