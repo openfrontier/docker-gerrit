@@ -19,8 +19,10 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   if [ -z "$(ls -A "$GERRIT_SITE")" ]; then
     echo "First time initialize gerrit..."
     gosu ${GERRIT_USER} java -jar "${GERRIT_WAR}" init --batch --no-auto-start -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}
-    #All git repositories must be removed in order to be recreated at the secondary init below.
-    rm -rf "${GERRIT_SITE}/git"
+    #All git repositories must be removed when database is set as postgres or mysql
+    #in order to be recreated at the secondary init below.
+    #Or an execption will be thrown on secondary init.
+    [ ${#DATABASE_TYPE} -gt 0 ] && rm -rf "${GERRIT_SITE}/git"
   fi
 
   # Provide a way to customise this image
