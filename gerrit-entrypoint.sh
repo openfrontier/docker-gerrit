@@ -108,8 +108,15 @@ if [ "$1" = "/gerrit-start.sh" ]; then
     [ -z "${SMTP_SERVER_PORT}" ] || set_gerrit_config sendemail.smtpServerPort "${SMTP_SERVER_PORT}"
     [ -z "${SMTP_USER}" ]        || set_gerrit_config sendemail.smtpUser "${SMTP_USER}"
     [ -z "${SMTP_PASS}" ]        || set_secure_config sendemail.smtpPass "${SMTP_PASS}"
+    [ -z "${SMTP_ENCRYPTION}" ]      || set_gerrit_config sendemail.sendemail.smtpEncryption "${SMTP_ENCRYPTION}"
+    [ -z "${SMTP_CONNECT_TIMEOUT}" ] || set_gerrit_config sendemail.connectTimeout "${SMTP_CONNECT_TIMEOUT}"
+    [ -z "${SMTP_FROM}" ]            || set_gerrit_config sendemail.from "${SMTP_FROM}"
   fi
 
+  #Section user
+    [ -z "${USER_NAME}" ]             || set_gerrit_config user.name "${USER_NAME}"
+    [ -z "${USER_EMAIL}" ]            || set_gerrit_config user.email "${USER_EMAIL}"
+    [ -z "${USER_ANONYMOUS_COWARD}" ] || set_gerrit_config user.anonymousCoward "${USER_ANONYMOUS_COWARD}"
 
   #Section plugins
   set_gerrit_config plugins.allowRemoteAdmin true

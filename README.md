@@ -43,7 +43,7 @@
   scripts.
 
 ## Run dockerized gerrit with dockerized PostgreSQL and OpenLDAP.
-#####All attributes in [gerrit.config ldap section](https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#ldap) is supported.
+#####All attributes in [gerrit.config ldap section](https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#ldap) are supported.
 
     #Start postgres docker
     docker run \
@@ -64,6 +64,40 @@
     -e AUTH_TYPE=LDAP \
     -e LDAP_SERVER=<ldap-servername> \
     -e LDAP_ACCOUNTBASE=<ldap-basedn> \
+    -d openfrontier/gerrit
+
+## Setup sendemail options.
+#####Some basic attributes in [gerrit.config sendmail section](https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#sendemail) are supported.
+
+    #Start gerrit docker with sendemail supported.
+    #All SMTP_* attributes are optional.
+    #Sendemail function will be disabled if SMTP_SERVER is not specified.
+    docker run \
+    --name gerrit \
+    -p 8080:8080 \
+    -p 29418:29418 \
+    -e WEBURL=http://<your.site.url>:8080 \
+    -e SMTP_SERVER=<your.smtp.server.url> \
+    -e SMTP_SERVER_PORT=25 \
+    -e SMTP_ENCRYPTION=tls \
+    -e SMTP_USER=<smtp user> \
+    -e SMTP_PASS=<smtp password> \
+    -e SMTP_CONNECT_TIMEOUT=10sec \
+    -e SMTP_FROM=USER \
+    -d openfrontier/gerrit
+
+## Setup user options.
+#####All attributes in [gerrit.config user section](https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#user) are supported.
+
+    #Start gerrit docker with user info provided.
+    #All USER_* attributes are optional.
+    docker run \
+    --name gerrit \
+    -p 8080:8080 \
+    -p 29418:29418 \
+    -e WEBURL=http://<your.site.url>:8080 \
+    -e USER_NAME=gerrit \
+    -e USER_EMAIL=<gerrit@your.site.domain> \
     -d openfrontier/gerrit
 
 ## Sample operational scripts
