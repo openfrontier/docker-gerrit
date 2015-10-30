@@ -25,6 +25,10 @@ if [ "$1" = "/gerrit-start.sh" ]; then
     [ ${#DATABASE_TYPE} -gt 0 ] && rm -rf "${GERRIT_SITE}/git"
   fi
 
+  # Install external plugins
+  cp -f ${GERRIT_HOME}/delete-project.jar ${GERRIT_SITE}/plugins/delete-project.jar
+  cp -f ${GERRIT_HOME}/events-log.jar ${GERRIT_SITE}/plugins/events-log.jar
+
   # Provide a way to customise this image
   echo
   for f in /docker-entrypoint-init.d/*; do

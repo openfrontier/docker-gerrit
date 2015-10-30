@@ -31,6 +31,21 @@ RUN curl -L https://gerrit-releases.storage.googleapis.com/gerrit-${GERRIT_VERSI
 #Only for local test
 #COPY gerrit-${GERRIT_VERSION}.war $GERRIT_WAR
 
+#Download Plugins
+ENV PLUGIN_VERSION=stable-2.11
+ENV GERRITFORGE_URL=https://gerrit-ci.gerritforge.com
+ENV GERRITFORGE_ARTIFACT_DIR=lastSuccessfulBuild/artifact/buck-out/gen/plugins
+#delete-project
+RUN curl \
+    -L ${GERRITFORGE_URL}/job/plugin-delete-project-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/delete-project/delete-project.jar \
+    -o ${GERRIT_HOME}/delete-project.jar
+
+#events-log
+#This plugin is required by gerrit-trigger plugin of Jenkins.
+RUN curl \
+    -L ${GERRITFORGE_URL}/job/plugin-events-log-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/events-log/events-log.jar \
+    -o ${GERRIT_HOME}/events-log.jar
+
 # Ensure the entrypoint scripts are in a fixed location
 COPY gerrit-entrypoint.sh /
 COPY gerrit-start.sh /
