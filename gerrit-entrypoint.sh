@@ -65,7 +65,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   fi
 
   #Section ldap
-  if [ "${AUTH_TYPE}" = 'LDAP' ]; then
+  if [ "${AUTH_TYPE}" = 'LDAP' ] || [ "${AUTH_TYPE}" = 'LDAP_BIND' ] ; then
     set_gerrit_config auth.type "${AUTH_TYPE}"
     set_gerrit_config auth.gitBasicAuth true
     [ -z "${LDAP_SERVER}" ]                   || set_gerrit_config ldap.server "ldap://${LDAP_SERVER}"
