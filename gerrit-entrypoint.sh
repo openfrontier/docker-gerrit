@@ -2,11 +2,11 @@
 set -e
 
 function set_gerrit_config {
-  gosu ${GERRIT_USER} git config -f "${GERRIT_SITE}/etc/gerrit.config" $@
+  gosu ${GERRIT_USER} git config -f "${GERRIT_SITE}/etc/gerrit.config" "$@"
 }
 
 function set_secure_config {
-  gosu ${GERRIT_USER} git config -f "${GERRIT_SITE}/etc/secure.config" $@
+  gosu ${GERRIT_USER} git config -f "${GERRIT_SITE}/etc/secure.config" "$@"
 }
 
 #Initialize gerrit if gerrit site dir is empty.
