@@ -103,6 +103,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   if [ -z "${SMTP_SERVER}" ]; then
     set_gerrit_config sendemail.enable false
   else
+    set_gerrit_config sendemail.enable true
     set_gerrit_config sendemail.smtpServer "${SMTP_SERVER}"
     if [ "smtp.gmail.com" = "${SMTP_SERVER}" ]; then
       echo "gmail detected, using default port and encryption"
