@@ -8,8 +8,6 @@
 
  openfrontier/gerrit:2.10.x -> 2.10.6
 
- openfrontier/gerrit:2.9.x -> 2.9.4
-
 ## Container Quickstart
   1. Initialize and start gerrit.
 
