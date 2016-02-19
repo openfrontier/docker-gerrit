@@ -2,11 +2,11 @@
  The Gerrit code review system with PostgreSQL and OpenLDAP integration supported.
 
 ## Versions
- openfrontier/gerrit:latest -> 2.11.2
+ openfrontier/gerrit:latest -> 2.12
+
+ openfrontier/gerrit:2.11.x -> 2.11.5
 
  openfrontier/gerrit:2.10.x -> 2.10.6
-
- openfrontier/gerrit:2.9.x -> 2.9.4
 
 ## Container Quickstart
   1. Initialize and start gerrit.
