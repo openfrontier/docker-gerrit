@@ -16,13 +16,13 @@ RUN useradd -m -d "$GERRIT_HOME" -U $GERRIT_USER
 # Grab gosu for easy step-down from root
 RUN gpg --keyserver pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-	gitweb \
-	&& rm -rf /var/lib/apt/lists/* \
-	&& wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/1.7/gosu-$(dpkg --print-architecture)" \
-	&& wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/1.7/gosu-$(dpkg --print-architecture).asc" \
-	&& gpg --verify /usr/local/bin/gosu.asc \
-	&& rm /usr/local/bin/gosu.asc \
-	&& chmod +x /usr/local/bin/gosu
+        gitweb \
+        && rm -rf /var/lib/apt/lists/* \
+        && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/1.7/gosu-$(dpkg --print-architecture)" \
+        && wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/1.7/gosu-$(dpkg --print-architecture).asc" \
+        && gpg --verify /usr/local/bin/gosu.asc \
+        && rm /usr/local/bin/gosu.asc \
+        && chmod +x /usr/local/bin/gosu
 
 RUN mkdir /docker-entrypoint-init.d
 
@@ -34,6 +34,7 @@ RUN curl -L https://gerrit-releases.storage.googleapis.com/gerrit-${GERRIT_VERSI
 #Download Plugins
 ENV PLUGIN_VERSION=stable-2.11
 ENV GERRITFORGE_URL=https://gerrit-ci.gerritforge.com
+ENV OAUTH_URL=https://github.com/davido/gerrit-oauth-provider/releases/download/v2.11.3/gerrit-oauth-provider.jar
 ENV GERRITFORGE_ARTIFACT_DIR=lastSuccessfulBuild/artifact/buck-out/gen/plugins
 #delete-project
 RUN curl \
@@ -45,6 +46,11 @@ RUN curl \
 RUN curl \
     -L ${GERRITFORGE_URL}/job/plugin-events-log-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/events-log/events-log.jar \
     -o ${GERRIT_HOME}/events-log.jar
+
+#oauth2 plugin
+RUN curl \
+    -L ${OAUTH_URL}\
+    -o ${GERRIT_HOME}/gerrit-oauth-provider.jar
 
 # Ensure the entrypoint scripts are in a fixed location
 COPY gerrit-entrypoint.sh /
@@ -64,4 +70,3 @@ ENTRYPOINT ["/gerrit-entrypoint.sh"]
 EXPOSE 8080 29418
 
 CMD ["/gerrit-start.sh"]
-
