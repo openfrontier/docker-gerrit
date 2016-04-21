@@ -28,7 +28,6 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   # Install external plugins
   cp -f ${GERRIT_HOME}/delete-project.jar ${GERRIT_SITE}/plugins/delete-project.jar
   cp -f ${GERRIT_HOME}/events-log.jar ${GERRIT_SITE}/plugins/events-log.jar
-  cp -f ${GERRIT_HOME}/gerrit-oauth-provider.jar ${GERRIT_SITE}/plugins/gerrit-oauth-provider.jar
 
   # Provide a way to customise this image
   echo
@@ -97,6 +96,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
 
   # section OAUTH general
   if [ "${AUTH_TYPE}" = 'OAUTH' ]  ; then
+    cp -f ${GERRIT_HOME}/gerrit-oauth-provider.jar ${GERRIT_SITE}/plugins/gerrit-oauth-provider.jar
     set_gerrit_config auth.type "${AUTH_TYPE}"
     [ -z "${OAUTH_ALLOW_EDIT_FULL_NAME}" ]     || set_gerrit_config oauth.allowEditFullName "${OAUTH_ALLOW_EDIT_FULL_NAME}"
     [ -z "${OAUTH_ALLOW_REGISTER_NEW_EMAIL}" ] || set_gerrit_config oauth.allowRegisterNewEmail "${OAUTH_ALLOW_REGISTER_NEW_EMAIL}"
