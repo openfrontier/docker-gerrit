@@ -1,4 +1,4 @@
-FROM java:openjdk-7-jre
+FROM java:openjdk-8-jre
 
 MAINTAINER zsx <thinkernel@gmail.com>
 
