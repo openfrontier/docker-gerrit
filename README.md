@@ -63,7 +63,7 @@
     -p 8080:8080 \
     -p 29418:29418 \
     -e WEBURL=http://<your.site.url>:8080 \
-    -e DATABASE_TYPE=postgresql 
+    -e DATABASE_TYPE=postgresql \
     -e AUTH_TYPE=LDAP \
     -e LDAP_SERVER=<ldap-servername> \
     -e LDAP_ACCOUNTBASE=<ldap-basedn> \
