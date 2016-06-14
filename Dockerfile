@@ -1,4 +1,4 @@
-FROM java:openjdk-8-jre
+FROM    java:jre-alpine
 
 MAINTAINER zsx <thinkernel@gmail.com>
 
@@ -11,23 +11,31 @@ ENV GERRIT_USER gerrit2
 ENV GERRIT_INIT_ARGS ""
 
 # Add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
-RUN useradd -m -d "$GERRIT_HOME" -U $GERRIT_USER
+RUN adduser -S -h "$GERRIT_HOME" $GERRIT_USER $GERRIT_USER
+
+RUN set -x \
+    && apk add --update --no-cache git openssh openssl bash
 
 # Grab gosu for easy step-down from root
-RUN gpg --keyserver pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        gitweb \
-        && rm -rf /var/lib/apt/lists/* \
-        && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/1.7/gosu-$(dpkg --print-architecture)" \
-        && wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/1.7/gosu-$(dpkg --print-architecture).asc" \
-        && gpg --verify /usr/local/bin/gosu.asc \
-        && rm /usr/local/bin/gosu.asc \
-        && chmod +x /usr/local/bin/gosu
+ENV GOSU_VERSION 1.9
+RUN set -x \
+    && apk add --no-cache --virtual .gosu-deps \
+        dpkg \
+        gnupg \
+    && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture | sed s/musl-linux-//)" \
+    && wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture  | sed s/musl-linux-//).asc" \
+    && export GNUPGHOME="$(mktemp -d)" \
+    && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
+    && gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
+    && rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc \
+    && chmod +x /usr/local/bin/gosu \
+    && gosu nobody true \
+    && apk del .gosu-deps
 
 RUN mkdir /docker-entrypoint-init.d
 
 #Download gerrit.war
-RUN curl -L https://gerrit-releases.storage.googleapis.com/gerrit-${GERRIT_VERSION}.war -o $GERRIT_WAR
+RUN wget https://gerrit-releases.storage.googleapis.com/gerrit-${GERRIT_VERSION}.war -O $GERRIT_WAR
 #Only for local test
 #COPY gerrit-${GERRIT_VERSION}.war $GERRIT_WAR
 
@@ -36,31 +44,32 @@ ENV PLUGIN_VERSION=stable-2.12
 ENV GERRITFORGE_URL=https://gerrit-ci.gerritforge.com
 ENV GERRITFORGE_ARTIFACT_DIR=lastSuccessfulBuild/artifact/buck-out/gen/plugins
 #delete-project
-RUN curl \
-    -L ${GERRITFORGE_URL}/job/plugin-delete-project-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/delete-project/delete-project.jar \
-    -o ${GERRIT_HOME}/delete-project.jar
+RUN wget \
+    ${GERRITFORGE_URL}/job/plugin-delete-project-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/delete-project/delete-project.jar \
+    -O ${GERRIT_HOME}/delete-project.jar
 
 #events-log
 #This plugin is required by gerrit-trigger plugin of Jenkins.
-RUN curl \
-    -L ${GERRITFORGE_URL}/job/plugin-events-log-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/events-log/events-log.jar \
-    -o ${GERRIT_HOME}/events-log.jar
+RUN wget \
+    ${GERRITFORGE_URL}/job/plugin-events-log-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/events-log/events-log.jar \
+    -O ${GERRIT_HOME}/events-log.jar
 
 #oauth2 plugin
-RUN curl \
-    -L ${GERRITFORGE_URL}/job/plugin-gerrit-oauth-provider-gh-master/${GERRITFORGE_ARTIFACT_DIR}/gerrit-oauth-provider/gerrit-oauth-provider.jar \
-    -o ${GERRIT_HOME}/gerrit-oauth-provider.jar
+RUN wget \
+    ${GERRITFORGE_URL}/job/plugin-gerrit-oauth-provider-gh-master/${GERRITFORGE_ARTIFACT_DIR}/gerrit-oauth-provider/gerrit-oauth-provider.jar \
+    -O ${GERRIT_HOME}/gerrit-oauth-provider.jar
 
 #download bouncy castle
-ENV BOUNCY_CASTLE_VERSION 154
-ENV BOUNCY_CASTLE_URL https://downloads.bouncycastle.org/java
+ENV BOUNCY_CASTLE_VERSION 1.54
+ENV BOUNCY_CASTLE_URL http://central.maven.org/maven2/org/bouncycastle
 
-RUN curl \
-    -L ${BOUNCY_CASTLE_URL}/bcprov-jdk15on-${BOUNCY_CASTLE_VERSION}.jar \
-    -o ${GERRIT_HOME}/bcprov-jdk15on-${BOUNCY_CASTLE_VERSION}.jar
-RUN curl \
-    -L ${BOUNCY_CASTLE_URL}/bcpkix-jdk15on-${BOUNCY_CASTLE_VERSION}.jar \
-    -o ${GERRIT_HOME}/bcpkix-jdk15on-${BOUNCY_CASTLE_VERSION}.jar
+RUN wget \
+    ${BOUNCY_CASTLE_URL}/bcprov-jdk15on/${BOUNCY_CASTLE_VERSION}/bcprov-jdk15on-${BOUNCY_CASTLE_VERSION}.jar \
+    -O ${GERRIT_HOME}/bcprov-jdk15on-${BOUNCY_CASTLE_VERSION}.jar
+
+RUN wget \
+    ${BOUNCY_CASTLE_URL}/bcpkix-jdk15on/${BOUNCY_CASTLE_VERSION}/bcpkix-jdk15on-${BOUNCY_CASTLE_VERSION}.jar \
+    -O ${GERRIT_HOME}/bcpkix-jdk15on-${BOUNCY_CASTLE_VERSION}.jar
 
 # Ensure the entrypoint scripts are in a fixed location
 COPY gerrit-entrypoint.sh /
