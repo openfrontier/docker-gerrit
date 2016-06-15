@@ -1,5 +1,6 @@
 # Gerrit Docker image
  The Gerrit code review system with PostgreSQL and OpenLDAP integration supported.
+ This image is based on the Alpine Linux project which makes this image smaller and faster than before.
 
 ## Versions
  openfrontier/gerrit:latest -> 2.12.2

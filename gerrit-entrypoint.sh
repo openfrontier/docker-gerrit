@@ -156,6 +156,9 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   #Section httpd
   [ -z "${HTTPD_LISTENURL}" ] || set_gerrit_config httpd.listenUrl "${HTTPD_LISTENURL}"
 
+  #Section gitweb
+  set_gerrit_config gitweb.cgi "/usr/share/gitweb/gitweb.cgi"
+
   echo "Upgrading gerrit..."
   gosu ${GERRIT_USER} java -jar "${GERRIT_WAR}" init --batch -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}
   if [ $? -eq 0 ]; then
