@@ -14,7 +14,7 @@ ENV GERRIT_INIT_ARGS ""
 RUN adduser -S -h "$GERRIT_HOME" $GERRIT_USER $GERRIT_USER
 
 RUN set -x \
-    && apk add --update --no-cache git openssh openssl bash
+    && apk add --update --no-cache git openssh openssl bash perl perl-cgi git-gitweb
 
 # Grab gosu for easy step-down from root
 ENV GOSU_VERSION 1.9
