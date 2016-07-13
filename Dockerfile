@@ -1,4 +1,4 @@
-FROM    java:jre-alpine
+FROM java:openjdk-8-jdk-alpine
 
 MAINTAINER zsx <thinkernel@gmail.com>
 
