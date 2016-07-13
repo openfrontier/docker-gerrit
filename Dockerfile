@@ -11,7 +11,7 @@ ENV GERRIT_USER gerrit2
 ENV GERRIT_INIT_ARGS ""
 
 # Add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
-RUN adduser -S -h "$GERRIT_HOME" $GERRIT_USER $GERRIT_USER
+RUN adduser -D -h "${GERRIT_HOME}" -g "Gerrit User" -s /sbin/nologin "${GERRIT_USER}"
 
 RUN set -x \
     && apk add --update --no-cache git openssh openssl bash perl perl-cgi git-gitweb
