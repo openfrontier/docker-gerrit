@@ -2,9 +2,9 @@
  The Gerrit code review system with PostgreSQL and OpenLDAP integration supported.
 
 ## Versions
- openfrontier/gerrit:latest -> 2.12
+ openfrontier/gerrit:latest -> 2.12.3
 
- openfrontier/gerrit:2.11.x -> 2.11.8
+ openfrontier/gerrit:2.11.x -> 2.11.9
 
  openfrontier/gerrit:2.10.x -> 2.10.6
 
