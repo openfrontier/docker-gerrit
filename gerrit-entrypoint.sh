@@ -47,6 +47,10 @@ if [ "$1" = "/gerrit-start.sh" ]; then
 
   #Section gerrit
   [ -z "${WEBURL}" ] || set_gerrit_config gerrit.canonicalWebUrl "${WEBURL}"
+  [ -z "${GITHTTPURL}" ] || set_gerrit_config gerrit.gitHttpUrl "${GITHTTPURL}"
+
+  #Section sshd
+  [ -z "${LISTEN_ADDR}" ] || set_gerrit_config sshd.listenAddress "${LISTEN_ADDR}"
 
   #Section database
   if [ "${DATABASE_TYPE}" = 'postgresql' ]; then
