@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 set -e
 #TODO:Not sure if gerrit can be stopped properly...
 echo "Starting Gerrit..."

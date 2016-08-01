@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env sh
 set -e
 
-function set_gerrit_config {
+set_gerrit_config() {
   gosu ${GERRIT_USER} git config -f "${GERRIT_SITE}/etc/gerrit.config" "$@"
 }
 
-function set_secure_config {
+set_secure_config() {
   gosu ${GERRIT_USER} git config -f "${GERRIT_SITE}/etc/secure.config" "$@"
 }
 
@@ -155,6 +155,9 @@ if [ "$1" = "/gerrit-start.sh" ]; then
 
   #Section httpd
   [ -z "${HTTPD_LISTENURL}" ] || set_gerrit_config httpd.listenUrl "${HTTPD_LISTENURL}"
+
+  #Section gitweb
+  set_gerrit_config gitweb.cgi "/usr/share/gitweb/gitweb.cgi"
 
   echo "Upgrading gerrit..."
   gosu ${GERRIT_USER} java -jar "${GERRIT_WAR}" init --batch -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}
