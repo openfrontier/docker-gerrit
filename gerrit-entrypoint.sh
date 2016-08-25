@@ -152,9 +152,6 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   #Section plugins
   set_gerrit_config plugins.allowRemoteAdmin true
 
-  #Section httpd
-  [ -z "${HTTPD_LISTENURL}" ] || set_gerrit_config httpd.listenUrl "${HTTPD_LISTENURL}"
-
   #Section gitweb
   set_gerrit_config gitweb.cgi "/usr/share/gitweb/gitweb.cgi"
 
@@ -166,5 +163,9 @@ if [ "$1" = "/gerrit-start.sh" ]; then
     echo "Something wrong..."
     cat "${GERRIT_SITE}/logs/error_log"
   fi
+
+  #Section httpd
+  [ -z "${HTTPD_LISTENURL}" ] || set_gerrit_config httpd.listenUrl "${HTTPD_LISTENURL}"
+
 fi
 exec "$@"
