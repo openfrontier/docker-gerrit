@@ -169,5 +169,6 @@ if [ "$1" = "/gerrit-start.sh" ]; then
     echo "Something wrong..."
     cat "${GERRIT_SITE}/logs/error_log"
   fi
+  gosu ${GERRIT_USER} java -jar "${GERRIT_WAR}" reindex -d "${GERRIT_SITE}"
 fi
 exec "$@"
