@@ -5,7 +5,7 @@
 ## Versions
  openfrontier/gerrit:latest -> 2.12.4
 
- openfrontier/gerrit:2.11.x -> 2.11.9
+ openfrontier/gerrit:2.11.x -> 2.11.10
 
  openfrontier/gerrit:2.10.x -> 2.10.6
 
