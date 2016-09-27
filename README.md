@@ -69,7 +69,7 @@
     -e WEBURL=http://<your.site.url>:8080 \
     -e DATABASE_TYPE=postgresql \
     -e AUTH_TYPE=LDAP \
-    -e LDAP_SERVER=<ldap-servername> \
+    -e LDAP_SERVER=ldap://ldap-server-FQDN \
     -e LDAP_ACCOUNTBASE=<ldap-basedn> \
     -d openfrontier/gerrit
 

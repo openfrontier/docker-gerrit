@@ -81,7 +81,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   #Section ldap
   if [ "${AUTH_TYPE}" = 'LDAP' ] || [ "${AUTH_TYPE}" = 'LDAP_BIND' ] || [ "${AUTH_TYPE}" = 'HTTP_LDAP' ]; then
     [ -z "${AUTH_GIT_BASIC_AUTH}" ]           && set_gerrit_config auth.gitBasicAuth true
-    [ -z "${LDAP_SERVER}" ]                   || set_gerrit_config ldap.server "ldap://${LDAP_SERVER}"
+    [ -z "${LDAP_SERVER}" ]                   || set_gerrit_config ldap.server "${LDAP_SERVER}"
     [ -z "${LDAP_SSLVERIFY}" ]                || set_gerrit_config ldap.sslVerify "${LDAP_SSLVERIFY}"
     [ -z "${LDAP_GROUPSVISIBLETOALL}" ]       || set_gerrit_config ldap.groupsVisibleToAll "${LDAP_GROUPSVISIBLETOALL}"
     [ -z "${LDAP_USERNAME}" ]                 || set_gerrit_config ldap.username "${LDAP_USERNAME}"
