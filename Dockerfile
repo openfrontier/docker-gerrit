@@ -6,7 +6,7 @@ MAINTAINER zsx <thinkernel@gmail.com>
 ENV GERRIT_HOME /var/gerrit
 ENV GERRIT_SITE ${GERRIT_HOME}/review_site
 ENV GERRIT_WAR ${GERRIT_HOME}/gerrit.war
-ENV GERRIT_VERSION 2.12.5
+ENV GERRIT_VERSION 2.13.1
 ENV GERRIT_USER gerrit2
 ENV GERRIT_INIT_ARGS ""
 
@@ -40,7 +40,7 @@ RUN wget https://gerrit-releases.storage.googleapis.com/gerrit-${GERRIT_VERSION}
 #COPY gerrit-${GERRIT_VERSION}.war $GERRIT_WAR
 
 #Download Plugins
-ENV PLUGIN_VERSION=stable-2.12
+ENV PLUGIN_VERSION=stable-2.13
 ENV GERRITFORGE_URL=https://gerrit-ci.gerritforge.com
 ENV GERRITFORGE_ARTIFACT_DIR=lastSuccessfulBuild/artifact/buck-out/gen/plugins
 #delete-project
@@ -56,7 +56,7 @@ RUN wget \
 
 #oauth2 plugin
 RUN wget \
-    https://github.com/davido/gerrit-oauth-provider/releases/download/v2.12.4/gerrit-oauth-provider.jar \
+    https://github.com/davido/gerrit-oauth-provider/releases/download/v${GERRIT_VERSION}/gerrit-oauth-provider.jar \
     -O ${GERRIT_HOME}/gerrit-oauth-provider.jar
 
 #download bouncy castle

@@ -165,6 +165,8 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   echo "Upgrading gerrit..."
   gosu ${GERRIT_USER} java -jar "${GERRIT_WAR}" init --batch -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}
   if [ $? -eq 0 ]; then
+    echo "Reindexing..."
+    gosu ${GERRIT_USER} java -jar "${GERRIT_WAR}" reindex -d "${GERRIT_SITE}"
     echo "Upgrading is OK."
   else
     echo "Something wrong..."
