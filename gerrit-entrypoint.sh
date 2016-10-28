@@ -37,8 +37,9 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   echo
   for f in /docker-entrypoint-init.d/*; do
     case "$f" in
-      *.sh)  echo "$0: running $f"; . "$f" ;;
-      *)     echo "$0: ignoring $f" ;;
+      *.sh)    echo "$0: running $f"; source "$f" ;;
+      *.nohup) echo "$0: running $f"; nohup  "$f" & ;;
+      *)       echo "$0: ignoring $f" ;;
     esac
     echo
   done
