@@ -47,9 +47,9 @@
 
 ## Extend this image.
   Similarly to the [Postgres](https://hub.docker.com/_/postgres/) image, if you would like to do additional configuration mid-script, add one or more
-  `*.sh` scripts under `/docker-entrypoint-init.d`. This directory is created by default. Scripts in `/docker-entrypoint-init.d` are run after gerrit
-  has been initialized, but before any of the gerrit config is customized, allowing you to programmatically override environment variables in entrypoint
-  scripts.
+  `*.sh` or `*.nohup` scripts under `/docker-entrypoint-init.d`. This directory is created by default. Scripts in `/docker-entrypoint-init.d` are run after
+  gerrit has been initialized, but before any of the gerrit config is customized, allowing you to programmatically override environment variables in entrypoint
+  scripts. `*.nohup` scripts are run into the background with nohup command.
 
 ## Run dockerized gerrit with dockerized PostgreSQL and OpenLDAP.
 #####All attributes in [gerrit.config ldap section](https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#ldap) are supported.
