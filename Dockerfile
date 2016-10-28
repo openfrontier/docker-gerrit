@@ -14,7 +14,7 @@ ENV GERRIT_INIT_ARGS ""
 RUN adduser -D -h "${GERRIT_HOME}" -g "Gerrit User" -s /sbin/nologin "${GERRIT_USER}"
 
 RUN set -x \
-    && apk add --update --no-cache git openssh openssl bash perl perl-cgi git-gitweb
+    && apk add --update --no-cache git openssh openssl bash perl perl-cgi git-gitweb curl
 
 # Grab gosu for easy step-down from root
 ENV GOSU_VERSION 1.9
