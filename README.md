@@ -39,17 +39,28 @@
 
     `docker run -d -v ~/gerrit_volume:/var/gerrit/review_site -p 8080:8080 -p 29418:29418 openfrontier/gerrit`
 
-## Install plugins on start.
+## Install plugins on start up.
   When calling gerrit init --batch, it is possible to list plugins to be installed with --install-plugin=<plugin_name>. This can be done using the GERRIT_INIT_ARGS environment variable. See [Gerrit Documentation](https://gerrit-review.googlesource.com/Documentation/pgm-init.html) for more information.
 
-     #Install download-commands plugin on start
-     docker run -d -p 8080:8080 -p 29418:29418 -e GERRIT_INIT_ARGS='--install-plugin=download-commands' openfrontier/gerrit
+    #Install download-commands plugin on start up
+    docker run -d -p 8080:8080 -p 29418:29418 -e GERRIT_INIT_ARGS='--install-plugin=download-commands' openfrontier/gerrit
 
 ## Extend this image.
   Similarly to the [Postgres](https://hub.docker.com/_/postgres/) image, if you would like to do additional configuration mid-script, add one or more
   `*.sh` or `*.nohup` scripts under `/docker-entrypoint-init.d`. This directory is created by default. Scripts in `/docker-entrypoint-init.d` are run after
   gerrit has been initialized, but before any of the gerrit config is customized, allowing you to programmatically override environment variables in entrypoint
   scripts. `*.nohup` scripts are run into the background with nohup command.
+
+  You can also extend the image with a simple `Dockerfile`. The following example will add some scripts to initialize the container on start up.
+
+  ```dockerfile
+  FROM openfrontier/gerrit:latest
+
+  COPY gerrit-create-user.sh /docker-entrypoint-init.d/gerrit-create-user.sh
+  COPY gerrit-upload-ssh-key.sh /docker-entrypoint-init.d/gerrit-upload-ssh-key.sh
+  COPY gerrit-init.nohup /docker-entrypoint-init.d/gerrit-init.nohup
+  RUN chmod +x /docker-entrypoint-init.d/*.sh /docker-entrypoint-init.d/*.nohup
+  ```
 
 ## Run dockerized gerrit with dockerized PostgreSQL and OpenLDAP.
 #####All attributes in [gerrit.config ldap section](https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#ldap) are supported.
