@@ -140,7 +140,8 @@ KNOWN ISSUE'S: The current OAUTH plugin is not up to date (2.11.3) test or compi
 
 ## Setup DEVELOPMENT_BECOME_ANY_ACCOUNT option
 **DO NOT USE.** Only for use in a development environment.
-When this is the configured authentication method a hyperlink titled Become appears in the top right corner of the page, taking the user to a form where they can enter the username of any existing user account, and immediately login as that account, without any authentication taking place. This form of authentication is only useful for the GWT hosted mode shell, where OpenID authentication redirects might be risky to the developer's host computer, and HTTP authentication is not possible.
+When this is the configured authentication method a hyperlink titled "Become" appears in the top right corner of the page, taking the user to a form where they can enter the username of any existing user account, and immediately login as that account, without any authentication taking place. This form of authentication is only useful for the GWT hosted mode shell, where OpenID authentication redirects might be risky to the developer's host computer, and HTTP authentication is not possible.
+
     docker run \
     --name gerrit \
     -p 8080:8080 \
