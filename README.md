@@ -3,9 +3,9 @@
  This image is based on the Alpine Linux project which makes this image smaller and faster than before.
 
 ## Versions
- openfrontier/gerrit:latest -> 2.13.2
+ openfrontier/gerrit:latest -> 2.13.3
 
- openfrontier/gerrit:2.12.x -> 2.12.6
+ openfrontier/gerrit:2.12.x -> 2.12.7
 
  openfrontier/gerrit:2.11.x -> 2.11.10
 
