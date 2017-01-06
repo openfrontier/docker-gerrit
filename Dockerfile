@@ -1,4 +1,4 @@
-FROM java:openjdk-8-jre-alpine
+FROM openjdk:8-jre-alpine
 
 MAINTAINER zsx <thinkernel@gmail.com>
 
@@ -6,7 +6,7 @@ MAINTAINER zsx <thinkernel@gmail.com>
 ENV GERRIT_HOME /var/gerrit
 ENV GERRIT_SITE ${GERRIT_HOME}/review_site
 ENV GERRIT_WAR ${GERRIT_HOME}/gerrit.war
-ENV GERRIT_VERSION 2.13.2
+ENV GERRIT_VERSION 2.13.4
 ENV GERRIT_USER gerrit2
 ENV GERRIT_INIT_ARGS ""
 
@@ -56,8 +56,10 @@ RUN curl -fSsL \
     -o ${GERRIT_HOME}/events-log.jar
 
 #oauth2 plugin
+ENV GERRIT_OAUTH_VERSION 2.13.2
+
 RUN curl -fSsL \
-    https://github.com/davido/gerrit-oauth-provider/releases/download/v${GERRIT_VERSION}/gerrit-oauth-provider.jar \
+    https://github.com/davido/gerrit-oauth-provider/releases/download/v${GERRIT_OAUTH_VERSION}/gerrit-oauth-provider.jar \
     -o ${GERRIT_HOME}/gerrit-oauth-provider.jar
 
 #download bouncy castle
