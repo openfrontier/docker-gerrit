@@ -9,6 +9,10 @@ set_secure_config() {
   gosu ${GERRIT_USER} git config -f "${GERRIT_SITE}/etc/secure.config" "$@"
 }
 
+if [ -n "${JAVA_HEAPLIMIT}" ]; then
+  JAVA_MEM_OPTIONS="-Xmx${JAVA_HEAPLIMIT}"
+fi
+
 #Initialize gerrit if gerrit site dir is empty.
 #This is necessary when gerrit site is in a volume.
 if [ "$1" = "/gerrit-start.sh" ]; then
@@ -18,7 +22,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
 
   if [ -z "$(ls -A "$GERRIT_SITE")" ]; then
     echo "First time initialize gerrit..."
-    gosu ${GERRIT_USER} java -jar "${GERRIT_WAR}" init --batch --no-auto-start --skip-plugins -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}
+    gosu ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" init --batch --no-auto-start --skip-plugins -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}
     #All git repositories must be removed when database is set as postgres or mysql
     #in order to be recreated at the secondary init below.
     #Or an execption will be thrown on secondary init.
@@ -167,10 +171,10 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   set_gerrit_config gitweb.cgi "/usr/share/gitweb/gitweb.cgi"
 
   echo "Upgrading gerrit..."
-  gosu ${GERRIT_USER} java -jar "${GERRIT_WAR}" init --batch -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}
+  gosu ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" init --batch -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}
   if [ $? -eq 0 ]; then
     echo "Reindexing..."
-    gosu ${GERRIT_USER} java -jar "${GERRIT_WAR}" reindex -d "${GERRIT_SITE}"
+    gosu ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" reindex --verbose -d "${GERRIT_SITE}"
     echo "Upgrading is OK."
   else
     echo "Something wrong..."

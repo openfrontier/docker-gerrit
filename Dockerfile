@@ -1,4 +1,4 @@
-FROM java:openjdk-8-jre-alpine
+FROM openjdk:8-jre-alpine
 
 MAINTAINER zsx <thinkernel@gmail.com>
 
@@ -6,7 +6,7 @@ MAINTAINER zsx <thinkernel@gmail.com>
 ENV GERRIT_HOME /var/gerrit
 ENV GERRIT_SITE ${GERRIT_HOME}/review_site
 ENV GERRIT_WAR ${GERRIT_HOME}/gerrit.war
-ENV GERRIT_VERSION 2.13.2
+ENV GERRIT_VERSION 2.13.5
 ENV GERRIT_USER gerrit2
 ENV GERRIT_INIT_ARGS ""
 
@@ -22,11 +22,12 @@ RUN set -x \
     && apk add --no-cache --virtual .gosu-deps \
         dpkg \
         gnupg \
-    && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture | sed s/musl-linux-//)" \
-    && wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture  | sed s/musl-linux-//).asc" \
+    && curl -fSsL -o /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture | sed s/musl-linux-//)" \
+    && curl -fSsL -o /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture  | sed s/musl-linux-//).asc" \
     && export GNUPGHOME="$(mktemp -d)" \
-    && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
-    && gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
+    && echo "honor-http-proxy" > ${GNUPGHOME}/dirmngr.conf \
+    && gpg2 --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
+    && gpg2 --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
     && rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc \
     && chmod +x /usr/local/bin/gosu \
     && gosu nobody true \
@@ -35,7 +36,7 @@ RUN set -x \
 RUN mkdir /docker-entrypoint-init.d
 
 #Download gerrit.war
-RUN wget https://gerrit-releases.storage.googleapis.com/gerrit-${GERRIT_VERSION}.war -O $GERRIT_WAR
+RUN curl -fSsL https://gerrit-releases.storage.googleapis.com/gerrit-${GERRIT_VERSION}.war -o $GERRIT_WAR
 #Only for local test
 #COPY gerrit-${GERRIT_VERSION}.war $GERRIT_WAR
 
@@ -44,32 +45,34 @@ ENV PLUGIN_VERSION=stable-2.13
 ENV GERRITFORGE_URL=https://gerrit-ci.gerritforge.com
 ENV GERRITFORGE_ARTIFACT_DIR=lastSuccessfulBuild/artifact/buck-out/gen/plugins
 #delete-project
-RUN wget \
+RUN curl -fSsL \
     ${GERRITFORGE_URL}/job/plugin-delete-project-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/delete-project/delete-project.jar \
-    -O ${GERRIT_HOME}/delete-project.jar
+    -o ${GERRIT_HOME}/delete-project.jar
 
 #events-log
 #This plugin is required by gerrit-trigger plugin of Jenkins.
-RUN wget \
+RUN curl -fSsL \
     ${GERRITFORGE_URL}/job/plugin-events-log-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/events-log/events-log.jar \
-    -O ${GERRIT_HOME}/events-log.jar
+    -o ${GERRIT_HOME}/events-log.jar
 
 #oauth2 plugin
-RUN wget \
-    https://github.com/davido/gerrit-oauth-provider/releases/download/v${GERRIT_VERSION}/gerrit-oauth-provider.jar \
-    -O ${GERRIT_HOME}/gerrit-oauth-provider.jar
+ENV GERRIT_OAUTH_VERSION 2.13.2
+
+RUN curl -fSsL \
+    https://github.com/davido/gerrit-oauth-provider/releases/download/v${GERRIT_OAUTH_VERSION}/gerrit-oauth-provider.jar \
+    -o ${GERRIT_HOME}/gerrit-oauth-provider.jar
 
 #download bouncy castle
 ENV BOUNCY_CASTLE_VERSION 1.54
 ENV BOUNCY_CASTLE_URL http://central.maven.org/maven2/org/bouncycastle
 
-RUN wget \
+RUN curl -fSsL \
     ${BOUNCY_CASTLE_URL}/bcprov-jdk15on/${BOUNCY_CASTLE_VERSION}/bcprov-jdk15on-${BOUNCY_CASTLE_VERSION}.jar \
-    -O ${GERRIT_HOME}/bcprov-jdk15on-${BOUNCY_CASTLE_VERSION}.jar
+    -o ${GERRIT_HOME}/bcprov-jdk15on-${BOUNCY_CASTLE_VERSION}.jar
 
-RUN wget \
+RUN curl -fSsL \
     ${BOUNCY_CASTLE_URL}/bcpkix-jdk15on/${BOUNCY_CASTLE_VERSION}/bcpkix-jdk15on-${BOUNCY_CASTLE_VERSION}.jar \
-    -O ${GERRIT_HOME}/bcpkix-jdk15on-${BOUNCY_CASTLE_VERSION}.jar
+    -o ${GERRIT_HOME}/bcpkix-jdk15on-${BOUNCY_CASTLE_VERSION}.jar
 
 # Ensure the entrypoint scripts are in a fixed location
 COPY gerrit-entrypoint.sh /
