@@ -22,7 +22,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
 
   if [ -z "$(ls -A "$GERRIT_SITE")" ]; then
     echo "First time initialize gerrit..."
-    gosu ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" init --batch --no-auto-start --skip-plugins -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}
+    gosu ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" init --batch --no-auto-start -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}
     #All git repositories must be removed when database is set as postgres or mysql
     #in order to be recreated at the secondary init below.
     #Or an execption will be thrown on secondary init.
@@ -32,6 +32,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   # Install external plugins
   gosu ${GERRIT_USER} cp -f ${GERRIT_HOME}/delete-project.jar ${GERRIT_SITE}/plugins/delete-project.jar
   gosu ${GERRIT_USER} cp -f ${GERRIT_HOME}/events-log.jar ${GERRIT_SITE}/plugins/events-log.jar
+  gosu ${GERRIT_USER} cp -f ${GERRIT_HOME}/downloaded_plugins/*.jar ${GERRIT_SITE}/plugins/
 
   # Install the Bouncy Castle
   gosu ${GERRIT_USER} cp -f ${GERRIT_HOME}/bcprov-jdk15on-${BOUNCY_CASTLE_VERSION}.jar ${GERRIT_SITE}/lib/bcprov-jdk15on-${BOUNCY_CASTLE_VERSION}.jar
