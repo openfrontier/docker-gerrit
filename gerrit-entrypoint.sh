@@ -32,6 +32,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   # Install external plugins
   gosu ${GERRIT_USER} cp -f ${GERRIT_HOME}/delete-project.jar ${GERRIT_SITE}/plugins/delete-project.jar
   gosu ${GERRIT_USER} cp -f ${GERRIT_HOME}/events-log.jar ${GERRIT_SITE}/plugins/events-log.jar
+  gosu ${GERRIT_USER} cp -f ${GERRIT_HOME}/downloaded_plugins/*.jar ${GERRIT_SITE}/plugins/
 
   # Install the Bouncy Castle
   gosu ${GERRIT_USER} cp -f ${GERRIT_HOME}/bcprov-jdk15on-${BOUNCY_CASTLE_VERSION}.jar ${GERRIT_SITE}/lib/bcprov-jdk15on-${BOUNCY_CASTLE_VERSION}.jar
