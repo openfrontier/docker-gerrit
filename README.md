@@ -149,6 +149,29 @@ When this is the configured authentication method a hyperlink titled "Become" ap
     -e AUTH_TYPE=DEVELOPMENT_BECOME_ANY_ACCOUNT \
     -d openfrontier/gerrit
 
+## Override the default startup action
+
+Gerrit is launched using the `daemon` action of its init script.  This
+brings the server up without forking and sends error log messages to the
+console.  An alternative is to start Gerrit using `supervise` which is
+very similar to `daemon` except that error log messages are persisted to
+`${GERRIT_SITE}/logs/error_log`.
+
+Gerrit can be started with a non-default action using the
+`GERRIT_START_ACTION` environment variable.  For example, Gerrit can be
+started with `supervise` as follows:
+
+    docker run \
+        -e GERRIT_START_ACTION=supervise \
+        -v ~/gerrit_volume:/var/gerrit/review_site \
+        -p 8080:8080 \
+        -p 29418:29418 \
+        -d openfrontier/gerrit
+
+NOTE: Not all init actions make sense for starting Gerrit in a Docker
+container.  Specifically, invoking Gerrit with `start` forks the server
+before returning which will cause the container to exit soon after.
+
 ## Sample operational scripts
    An example to demonstrate the way of extending this Gerrit container to integrate with Jenkins are located in [openfrontier/gerrit-docker](https://github.com/openfrontier/gerrit-docker) project.
 
