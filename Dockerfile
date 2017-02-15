@@ -27,6 +27,7 @@ RUN curl -fSsL https://gerrit-releases.storage.googleapis.com/gerrit-${GERRIT_VE
 ENV PLUGIN_VERSION=stable-2.12
 ENV GERRITFORGE_URL=https://gerrit-ci.gerritforge.com
 ENV GERRITFORGE_ARTIFACT_DIR=lastSuccessfulBuild/artifact/buck-out/gen/plugins
+
 #delete-project
 RUN curl -fSsL \
     ${GERRITFORGE_URL}/job/plugin-delete-project-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/delete-project/delete-project.jar \
@@ -37,6 +38,11 @@ RUN curl -fSsL \
 RUN curl -fSsL \
     ${GERRITFORGE_URL}/job/plugin-events-log-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/events-log/events-log.jar \
     -o ${GERRIT_HOME}/events-log.jar
+
+#gitiles
+RUN curl -fSsL \
+    ${GERRITFORGE_URL}/job/plugin-gitiles-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/gitiles/gitiles.jar \
+    -o ${GERRIT_HOME}/gitiles.jar
 
 #oauth2 plugin
 ENV GERRIT_OAUTH_VERSION 2.12.4
