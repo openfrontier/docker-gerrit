@@ -18,8 +18,8 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   # This obviously ensures the permissions are set correctly for when gerrit starts.
   chown -R ${GERRIT_USER} "${GERRIT_SITE}"
 
-  # Initialize Gerrit if ${GERRIT_SITE} is empty.
-  if [ -z "$(ls -A "$GERRIT_SITE")" ]; then
+  # Initialize Gerrit if ${GERRIT_SITE}/git is empty.
+  if [ -z "$(ls -A "$GERRIT_SITE/git")" ]; then
     echo "First time initialize gerrit..."
     su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" init --batch --no-auto-start -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}
     #All git repositories must be removed when database is set as postgres or mysql
