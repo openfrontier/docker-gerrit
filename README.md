@@ -70,7 +70,8 @@
 
 ##### All attributes in [gerrit.config ldap section](https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#ldap) are supported.
 
-    #Start postgres docker
+  ```shell
+    # Start postgres docker
     docker run \
     --name pg-gerrit \
     -p 5432:5432 \
@@ -90,11 +91,13 @@
     -e LDAP_SERVER=ldap://ldap.server.address \
     -e LDAP_ACCOUNTBASE=<ldap-basedn> \
     -d openfrontier/gerrit
+  ```
 
 ## Setup sendemail options.
 
 ##### Some basic attributes in [gerrit.config sendmail section](https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#sendemail) are supported.
 
+  ```shell
     #Start gerrit docker with sendemail supported.
     #All SMTP_* attributes are optional.
     #Sendemail function will be disabled if SMTP_SERVER is not specified.
@@ -111,11 +114,13 @@
     -e SMTP_CONNECT_TIMEOUT=10sec \
     -e SMTP_FROM=USER \
     -d openfrontier/gerrit
+  ```
 
 ## Setup user options
 
 ##### All attributes in [gerrit.config user section](https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#user) are supported.
 
+  ```shell
     #Start gerrit docker with user info provided.
     #All USER_* attributes are optional.
     docker run \
@@ -126,9 +131,11 @@
     -e USER_NAME=gerrit \
     -e USER_EMAIL=gerrit@your.site.domain \
     -d openfrontier/gerrit
+  ```
 
 ## Setup OAUTH options
 
+  ```shell
     docker run \
     --name gerrit \
     -p 8080:8080 \
@@ -152,27 +159,32 @@
     -e OAUTH_GITLAB_CLIENT_ID=abcdefg \
     -e OAUTH_GITLAB_CLIENT_SECRET=secret123 \
     -d openfrontier/gerrit
+  ```
 
 ## Using gitiles instead of gitweb
 
+  ```shell
     docker run \
     --name gerrit \
     -p 8080:8080 \
     -p 29418:29418 \
     -e GITWEB_TYPE=gitiles \
     -d openfrontier/gerrit
+  ```
 
 ## Setup DEVELOPMENT_BECOME_ANY_ACCOUNT option
 
 **DO NOT USE.** Only for use in a development environment.
 When this is the configured authentication method a hyperlink titled "Become" appears in the top right corner of the page, taking the user to a form where they can enter the username of any existing user account, and immediately login as that account, without any authentication taking place. This form of authentication is only useful for the GWT hosted mode shell, where OpenID authentication redirects might be risky to the developer's host computer, and HTTP authentication is not possible.
 
+  ```shell
     docker run \
     --name gerrit \
     -p 8080:8080 \
     -p 29418:29418 \
     -e AUTH_TYPE=DEVELOPMENT_BECOME_ANY_ACCOUNT \
     -d openfrontier/gerrit
+  ```
 
 ## Override the default startup action
 
@@ -186,12 +198,14 @@ Gerrit can be started with a non-default action using the
 `GERRIT_START_ACTION` environment variable.  For example, Gerrit can be
 started with `supervise` as follows:
 
+  ```shell
     docker run \
         -e GERRIT_START_ACTION=supervise \
         -v ~/gerrit_volume:/var/gerrit/review_site \
         -p 8080:8080 \
         -p 29418:29418 \
         -d openfrontier/gerrit
+  ```
 
 **NOTE:** Not all init actions make sense for starting Gerrit in a Docker
 container.  Specifically, invoking Gerrit with `start` forks the server
