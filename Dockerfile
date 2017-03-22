@@ -45,7 +45,7 @@ RUN curl -fSsL \
     -o ${GERRIT_HOME}/gitiles.jar
 
 #oauth2 plugin
-ENV GERRIT_OAUTH_VERSION 2.13.2
+ENV GERRIT_OAUTH_VERSION 2.13.6
 
 RUN curl -fSsL \
     https://github.com/davido/gerrit-oauth-provider/releases/download/v${GERRIT_OAUTH_VERSION}/gerrit-oauth-provider.jar \
