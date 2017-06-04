@@ -6,7 +6,7 @@ MAINTAINER zsx <thinkernel@gmail.com>
 ENV GERRIT_HOME /var/gerrit
 ENV GERRIT_SITE ${GERRIT_HOME}/review_site
 ENV GERRIT_WAR ${GERRIT_HOME}/gerrit.war
-ENV GERRIT_VERSION 2.13.8
+ENV GERRIT_VERSION 2.14
 ENV GERRIT_USER gerrit2
 ENV GERRIT_INIT_ARGS ""
 
@@ -24,9 +24,10 @@ RUN curl -fSsL https://gerrit-releases.storage.googleapis.com/gerrit-${GERRIT_VE
 #COPY gerrit-${GERRIT_VERSION}.war $GERRIT_WAR
 
 #Download Plugins
-ENV PLUGIN_VERSION=stable-2.13
+ENV PLUGIN_VERSION=bazel-stable-2.14
+ENV EVENTSLOG_PLUGIN_VERSION=bazel-master-stable-2.14
 ENV GERRITFORGE_URL=https://gerrit-ci.gerritforge.com
-ENV GERRITFORGE_ARTIFACT_DIR=lastSuccessfulBuild/artifact/buck-out/gen/plugins
+ENV GERRITFORGE_ARTIFACT_DIR=lastSuccessfulBuild/artifact/bazel-genfiles/plugins
 
 #delete-project
 RUN curl -fSsL \
@@ -36,7 +37,7 @@ RUN curl -fSsL \
 #events-log
 #This plugin is required by gerrit-trigger plugin of Jenkins.
 RUN curl -fSsL \
-    ${GERRITFORGE_URL}/job/plugin-events-log-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/events-log/events-log.jar \
+    ${GERRITFORGE_URL}/job/plugin-events-log-${EVENTSLOG_PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/events-log/events-log.jar \
     -o ${GERRIT_HOME}/events-log.jar
 
 #gitiles
@@ -50,18 +51,6 @@ ENV GERRIT_OAUTH_VERSION 2.13.6
 RUN curl -fSsL \
     https://github.com/davido/gerrit-oauth-provider/releases/download/v${GERRIT_OAUTH_VERSION}/gerrit-oauth-provider.jar \
     -o ${GERRIT_HOME}/gerrit-oauth-provider.jar
-
-#download bouncy castle
-ENV BOUNCY_CASTLE_VERSION 1.54
-ENV BOUNCY_CASTLE_URL http://central.maven.org/maven2/org/bouncycastle
-
-RUN curl -fSsL \
-    ${BOUNCY_CASTLE_URL}/bcprov-jdk15on/${BOUNCY_CASTLE_VERSION}/bcprov-jdk15on-${BOUNCY_CASTLE_VERSION}.jar \
-    -o ${GERRIT_HOME}/bcprov-jdk15on-${BOUNCY_CASTLE_VERSION}.jar
-
-RUN curl -fSsL \
-    ${BOUNCY_CASTLE_URL}/bcpkix-jdk15on/${BOUNCY_CASTLE_VERSION}/bcpkix-jdk15on-${BOUNCY_CASTLE_VERSION}.jar \
-    -o ${GERRIT_HOME}/bcpkix-jdk15on-${BOUNCY_CASTLE_VERSION}.jar
 
 # Ensure the entrypoint scripts are in a fixed location
 COPY gerrit-entrypoint.sh /
