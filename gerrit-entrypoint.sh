@@ -32,10 +32,6 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   su-exec ${GERRIT_USER} cp -f ${GERRIT_HOME}/delete-project.jar ${GERRIT_SITE}/plugins/delete-project.jar
   su-exec ${GERRIT_USER} cp -f ${GERRIT_HOME}/events-log.jar ${GERRIT_SITE}/plugins/events-log.jar
 
-  # Install the Bouncy Castle
-  # su-exec ${GERRIT_USER} cp -f ${GERRIT_HOME}/bcprov-jdk15on-${BOUNCY_CASTLE_VERSION}.jar ${GERRIT_SITE}/lib/bcprov-jdk15on-${BOUNCY_CASTLE_VERSION}.jar
-  # su-exec ${GERRIT_USER} cp -f ${GERRIT_HOME}/bcpkix-jdk15on-${BOUNCY_CASTLE_VERSION}.jar ${GERRIT_SITE}/lib/bcpkix-jdk15on-${BOUNCY_CASTLE_VERSION}.jar
-
   # Provide a way to customise this image
   echo
   for f in /docker-entrypoint-init.d/*; do
@@ -184,11 +180,40 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   echo "Upgrading gerrit..."
   su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" init --batch -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}
   if [ $? -eq 0 ]; then
-    echo "Reindexing..."
-    su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" reindex --verbose -d "${GERRIT_SITE}"
-    echo "Reindexing accounts..."
-    su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" reindex --verbose --index accounts -d "${GERRIT_SITE}"
-    echo "Upgrading is OK."
+    GERRIT_VERSIONFILE="${GERRIT_SITE}/gerrit_version.txt"
+
+    if [ -z "${IGNORE_VERSIONCHECK}" ]; then
+      # dont perform a version check and never do a full reindex
+      NEED_REINDEX=0
+    else
+      # check whether its a good idea to do a full upgrade
+      NEED_REINDEX=1
+      echo "checking version file ${GERRIT_VERSIONFILE}"
+      if [ -f "${GERRIT_VERSIONFILE}" ]; then
+        OLD_GERRIT_VER="V"`cat ${GERRIT_VERSIONFILE}`
+        GERRIT_VER="V${GERRIT_VERSION}"
+        echo " have old gerrit version ${OLD_GERRIT_VER}"
+        if [ "${OLD_GERRIT_VER}" == "${GERRIT_VER}" ]; then
+          echo " same gerrit version, no upgrade necessary ${OLD_GERRIT_VER} == ${GERRIT_VER}"
+          NEED_REINDEX=0
+        else
+          echo " gerrit version mismatch #${OLD_GERRIT_VER}# != #${GERRIT_VER}#"
+        fi 
+      else
+        echo " gerrit version file does not exist, upgrade necessary"
+      fi
+    fi
+
+    if [ ${NEED_REINDEX} -eq 1 ]; then
+      echo "Reindexing all..."
+      su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" reindex --verbose -d "${GERRIT_SITE}"
+    else 
+      echo "Reindexing accounts..."
+      su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" reindex --verbose --index accounts -d "${GERRIT_SITE}"
+    fi
+    echo "Upgrading is OK. Writing versionfile ${GERRIT_VERSIONFILE}"
+    echo "${GERRIT_VERSION}" > "${GERRIT_VERSIONFILE}"
+    echo "${GERRIT_VERSIONFILE} written."
   else
     echo "Something wrong..."
     cat "${GERRIT_SITE}/logs/error_log"
