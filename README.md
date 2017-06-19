@@ -226,7 +226,7 @@ before returning which will cause the container to exit soon after.
 
 ## Automatic reindex detection
 
-  The docker container automatically writes the current gerrit version into `${GERRIT_HOME}/review_site/gerrit_version.txt`
+  The docker container automatically writes the current gerrit version into `${GERRIT_HOME}/review_site/gerrit_version`
   in order to detect whether a full upgrade should be performed. 
   This check can be disabled via the `IGNORE_VERSIONCHECK` environment variable.
 

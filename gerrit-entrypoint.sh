@@ -180,7 +180,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   echo "Upgrading gerrit..."
   su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" init --batch -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}
   if [ $? -eq 0 ]; then
-    GERRIT_VERSIONFILE="${GERRIT_SITE}/gerrit_version.txt"
+    GERRIT_VERSIONFILE="${GERRIT_SITE}/gerrit_version"
 
     if [ -n "${IGNORE_VERSIONCHECK}" ]; then
       echo "Don't perform a version check and never do a full reindex"
