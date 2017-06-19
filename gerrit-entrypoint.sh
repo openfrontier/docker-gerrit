@@ -182,7 +182,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   if [ $? -eq 0 ]; then
     GERRIT_VERSIONFILE="${GERRIT_SITE}/gerrit_version.txt"
 
-    if [ -z "${IGNORE_VERSIONCHECK}" ]; then
+    if [ -n "${IGNORE_VERSIONCHECK}" ]; then
       # dont perform a version check and never do a full reindex
       NEED_REINDEX=0
     else
@@ -190,7 +190,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
       NEED_REINDEX=1
       echo "checking version file ${GERRIT_VERSIONFILE}"
       if [ -f "${GERRIT_VERSIONFILE}" ]; then
-        OLD_GERRIT_VER="V"`cat ${GERRIT_VERSIONFILE}`
+        OLD_GERRIT_VER="V$(cat ${GERRIT_VERSIONFILE})"
         GERRIT_VER="V${GERRIT_VERSION}"
         echo " have old gerrit version ${OLD_GERRIT_VER}"
         if [ "${OLD_GERRIT_VER}" == "${GERRIT_VER}" ]; then
@@ -203,17 +203,17 @@ if [ "$1" = "/gerrit-start.sh" ]; then
         echo " gerrit version file does not exist, upgrade necessary"
       fi
     fi
-
     if [ ${NEED_REINDEX} -eq 1 ]; then
-      echo "Reindexing all..."
+      echo "Reindexing..."
       su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" reindex --verbose -d "${GERRIT_SITE}"
-    else 
-      echo "Reindexing accounts..."
-      su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" reindex --verbose --index accounts -d "${GERRIT_SITE}"
+      if [ $? -eq 0 ]; then
+        echo "Upgrading is OK. Writing versionfile ${GERRIT_VERSIONFILE}"
+        echo "${GERRIT_VERSION}" > "${GERRIT_VERSIONFILE}"
+        echo "${GERRIT_VERSIONFILE} written."
+      else
+        echo "Upgrading fail!"
+      fi
     fi
-    echo "Upgrading is OK. Writing versionfile ${GERRIT_VERSIONFILE}"
-    echo "${GERRIT_VERSION}" > "${GERRIT_VERSIONFILE}"
-    echo "${GERRIT_VERSIONFILE} written."
   else
     echo "Something wrong..."
     cat "${GERRIT_SITE}/logs/error_log"
