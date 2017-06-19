@@ -183,12 +183,12 @@ if [ "$1" = "/gerrit-start.sh" ]; then
     GERRIT_VERSIONFILE="${GERRIT_SITE}/gerrit_version.txt"
 
     if [ -n "${IGNORE_VERSIONCHECK}" ]; then
-      # dont perform a version check and never do a full reindex
+      echo "Don't perform a version check and never do a full reindex"
       NEED_REINDEX=0
     else
       # check whether its a good idea to do a full upgrade
       NEED_REINDEX=1
-      echo "checking version file ${GERRIT_VERSIONFILE}"
+      echo "Checking version file ${GERRIT_VERSIONFILE}"
       if [ -f "${GERRIT_VERSIONFILE}" ]; then
         OLD_GERRIT_VER="V$(cat ${GERRIT_VERSIONFILE})"
         GERRIT_VER="V${GERRIT_VERSION}"
