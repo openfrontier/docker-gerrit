@@ -208,7 +208,8 @@ if [ "$1" = "/gerrit-start.sh" ]; then
       su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" reindex --verbose -d "${GERRIT_SITE}"
       if [ $? -eq 0 ]; then
         echo "Upgrading is OK. Writing versionfile ${GERRIT_VERSIONFILE}"
-        echo "${GERRIT_VERSION}" > "${GERRIT_VERSIONFILE}"
+        su-exec ${GERRIT_USER} touch "${GERRIT_VERSIONFILE}"
+        su-exec ${GERRIT_USER} echo "${GERRIT_VERSION}" > "${GERRIT_VERSIONFILE}"
         echo "${GERRIT_VERSIONFILE} written."
       else
         echo "Upgrading fail!"
