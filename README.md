@@ -159,6 +159,10 @@
     -e OAUTH_GITLAB_ROOT_URL=http://my-gitlab.example.com/ \
     -e OAUTH_GITLAB_CLIENT_ID=abcdefg \
     -e OAUTH_GITLAB_CLIENT_SECRET=secret123 \
+    # Bitbucket OAuth
+    -e OAUTH_BITBUCKET_CLIENT_ID=abcdefg \
+    -e OAUTH_BITBUCKET_CLIENT_SECRET=secret123 \
+    -e OAUTH_BITBUCKET_FIX_LEGACY_USER_ID=true \
     -d openfrontier/gerrit
   ```
 
