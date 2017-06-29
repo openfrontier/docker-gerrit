@@ -81,7 +81,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
       LDAP|LDAP_BIND)
         set_gerrit_config auth.gitBasicAuthPolicy "LDAP"
         ;;
-      HTTP|HTTP_LDAP|OAUTH)
+      HTTP|HTTP_LDAP)
         set_gerrit_config auth.gitBasicAuthPolicy "${AUTH_TYPE}"
         ;;
       *)
