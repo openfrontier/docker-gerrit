@@ -4,8 +4,8 @@
 
 ## Versions
 
- * openfrontier/gerrit:latest -> 2.14.1
- * openfrontier/gerrit:2.13.x -> 2.13.8
+ * openfrontier/gerrit:latest -> 2.14.2
+ * openfrontier/gerrit:2.13.x -> 2.13.9
  * openfrontier/gerrit:2.12.x -> 2.12.7
  * openfrontier/gerrit:2.11.x -> 2.11.10
  * openfrontier/gerrit:2.10.x -> 2.10.6
