@@ -25,7 +25,6 @@ RUN curl -fSsL https://gerrit-releases.storage.googleapis.com/gerrit-${GERRIT_VE
 
 #Download Plugins
 ENV PLUGIN_VERSION=bazel-stable-2.14
-ENV EVENTSLOG_PLUGIN_VERSION=bazel-master-stable-2.14
 ENV GERRITFORGE_URL=https://gerrit-ci.gerritforge.com
 ENV GERRITFORGE_ARTIFACT_DIR=lastSuccessfulBuild/artifact/bazel-genfiles/plugins
 
@@ -37,7 +36,7 @@ RUN curl -fSsL \
 #events-log
 #This plugin is required by gerrit-trigger plugin of Jenkins.
 RUN curl -fSsL \
-    ${GERRITFORGE_URL}/job/plugin-events-log-${EVENTSLOG_PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/events-log/events-log.jar \
+    ${GERRITFORGE_URL}/job/plugin-events-log-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/events-log/events-log.jar \
     -o ${GERRIT_HOME}/events-log.jar
 
 #gitiles
