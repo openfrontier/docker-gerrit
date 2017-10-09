@@ -9,6 +9,16 @@ set_secure_config() {
   su-exec ${GERRIT_USER} git config -f "${GERRIT_SITE}/etc/secure.config" "$@"
 }
 
+wait_for_database() {
+  echo "Waiting for database connection $1:$2 ..."
+  until nc -z $1 $2; do
+    sleep 1
+  done
+
+  # Wait to avoid "panic: Failed to open sql connection pq: the database system is starting up"
+  sleep 1
+}
+
 if [ -n "${JAVA_HEAPLIMIT}" ]; then
   JAVA_MEM_OPTIONS="-Xmx${JAVA_HEAPLIMIT}"
 fi
@@ -204,6 +214,12 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   esac
   set_gerrit_config gitweb.type "$GITWEB_TYPE"
 
+  case "${DATABASE_TYPE}" in
+    postgresql) wait_for_database ${DB_PORT_5432_TCP_ADDR} ${DB_PORT_5432_TCP_PORT} ;;
+    mysql)      wait_for_database ${DB_PORT_3306_TCP_ADDR} ${DB_PORT_3306_TCP_PORT} ;;
+    *)          ;;
+  esac
+
   echo "Upgrading gerrit..."
   su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" init --batch -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}
   if [ $? -eq 0 ]; then
@@ -225,7 +241,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
           NEED_REINDEX=0
         else
           echo " gerrit version mismatch #${OLD_GERRIT_VER}# != #${GERRIT_VER}#"
-        fi 
+        fi
       else
         echo " gerrit version file does not exist, upgrade necessary"
       fi
