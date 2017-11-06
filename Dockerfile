@@ -28,7 +28,7 @@ ENV GERRITFORGE_URL=https://gerrit-ci.gerritforge.com
 ENV GERRITFORGE_ARTIFACT_DIR=lastSuccessfulBuild/artifact/bazel-genfiles/plugins
 
 #delete-project
-ENV DELPROJ_PLUGIN_VERSION=bazel-master-stable-2.15
+ENV DELPROJ_PLUGIN_VERSION=bazel-stable-2.15
 RUN curl -fSsL \
     ${GERRITFORGE_URL}/job/plugin-delete-project-${DELPROJ_PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/delete-project/delete-project.jar \
     -o ${GERRIT_HOME}/delete-project.jar
