@@ -52,6 +52,12 @@ RUN curl -fSsL \
     https://github.com/davido/gerrit-oauth-provider/releases/download/v${GERRIT_OAUTH_VERSION}/gerrit-oauth-provider.jar \
     -o ${GERRIT_HOME}/gerrit-oauth-provider.jar
 
+#importer
+ENV IMPORTER_PLUGIN_VERSION=bazel-master
+RUN curl -fSsL \
+    ${GERRITFORGE_URL}/job/plugin-importer-${IMPORTER_PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/importer/importer.jar \
+    -o ${GERRIT_HOME}/importer.jar
+
 # Ensure the entrypoint scripts are in a fixed location
 COPY gerrit-entrypoint.sh /
 COPY gerrit-start.sh /
