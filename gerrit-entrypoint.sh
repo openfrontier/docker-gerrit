@@ -2,11 +2,11 @@
 set -e
 
 set_gerrit_config() {
-  su-exec ${GERRIT_USER} git config -f "${GERRIT_SITE}/etc/gerrit.config" "$@"
+  gosu ${GERRIT_USER} git config -f "${GERRIT_SITE}/etc/gerrit.config" "$@"
 }
 
 set_secure_config() {
-  su-exec ${GERRIT_USER} git config -f "${GERRIT_SITE}/etc/secure.config" "$@"
+  gosu ${GERRIT_USER} git config -f "${GERRIT_SITE}/etc/secure.config" "$@"
 }
 
 wait_for_database() {
@@ -31,7 +31,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   # Initialize Gerrit if ${GERRIT_SITE}/git is empty.
   if [ -z "$(ls -A "$GERRIT_SITE/git")" ]; then
     echo "First time initialize gerrit..."
-    su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" init --batch --no-auto-start -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}
+    gosu ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" init --batch --no-auto-start -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}
     #All git repositories must be removed when database is set as postgres or mysql
     #in order to be recreated at the secondary init below.
     #Or an execption will be thrown on secondary init.
@@ -39,9 +39,9 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   fi
 
   # Install external plugins
-  su-exec ${GERRIT_USER} cp -f ${GERRIT_HOME}/delete-project.jar ${GERRIT_SITE}/plugins/delete-project.jar
-  su-exec ${GERRIT_USER} cp -f ${GERRIT_HOME}/events-log.jar ${GERRIT_SITE}/plugins/events-log.jar
-  su-exec ${GERRIT_USER} cp -f ${GERRIT_HOME}/importer.jar ${GERRIT_SITE}/plugins/importer.jar
+  gosu ${GERRIT_USER} cp -f ${GERRIT_HOME}/delete-project.jar ${GERRIT_SITE}/plugins/delete-project.jar
+  gosu ${GERRIT_USER} cp -f ${GERRIT_HOME}/events-log.jar ${GERRIT_SITE}/plugins/events-log.jar
+  gosu ${GERRIT_USER} cp -f ${GERRIT_HOME}/importer.jar ${GERRIT_SITE}/plugins/importer.jar
 
   # Provide a way to customise this image
   echo
@@ -142,7 +142,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
 
   #Section OAUTH general
   if [ "${AUTH_TYPE}" = 'OAUTH' ]  ; then
-    su-exec ${GERRIT_USER} cp -f ${GERRIT_HOME}/gerrit-oauth-provider.jar ${GERRIT_SITE}/plugins/gerrit-oauth-provider.jar
+    gosu ${GERRIT_USER} cp -f ${GERRIT_HOME}/gerrit-oauth-provider.jar ${GERRIT_SITE}/plugins/gerrit-oauth-provider.jar
     [ -z "${OAUTH_ALLOW_EDIT_FULL_NAME}" ]     || set_gerrit_config oauth.allowEditFullName "${OAUTH_ALLOW_EDIT_FULL_NAME}"
     [ -z "${OAUTH_ALLOW_REGISTER_NEW_EMAIL}" ] || set_gerrit_config oauth.allowRegisterNewEmail "${OAUTH_ALLOW_REGISTER_NEW_EMAIL}"
 
@@ -208,7 +208,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
 
   #Section gitweb
   case "$GITWEB_TYPE" in
-     "gitiles") su-exec $GERRIT_USER cp -f $GERRIT_HOME/gitiles.jar $GERRIT_SITE/plugins/gitiles.jar ;;
+     "gitiles") gosu $GERRIT_USER cp -f $GERRIT_HOME/gitiles.jar $GERRIT_SITE/plugins/gitiles.jar ;;
      "") # Gitweb by default
         set_gerrit_config gitweb.cgi "/usr/share/gitweb/gitweb.cgi"
         export GITWEB_TYPE=gitweb
@@ -223,7 +223,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   esac
 
   echo "Upgrading gerrit..."
-  su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" init --batch -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}
+  gosu ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" init --batch -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}
   if [ $? -eq 0 ]; then
     GERRIT_VERSIONFILE="${GERRIT_SITE}/gerrit_version"
 
@@ -250,11 +250,11 @@ if [ "$1" = "/gerrit-start.sh" ]; then
     fi
     if [ ${NEED_REINDEX} -eq 1 ]; then
       echo "Reindexing..."
-      su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" reindex --verbose -d "${GERRIT_SITE}"
+      gosu ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" reindex --verbose -d "${GERRIT_SITE}"
       if [ $? -eq 0 ]; then
         echo "Upgrading is OK. Writing versionfile ${GERRIT_VERSIONFILE}"
-        su-exec ${GERRIT_USER} touch "${GERRIT_VERSIONFILE}"
-        su-exec ${GERRIT_USER} echo "${GERRIT_VERSION}" > "${GERRIT_VERSIONFILE}"
+        gosu ${GERRIT_USER} touch "${GERRIT_VERSIONFILE}"
+        gosu ${GERRIT_USER} echo "${GERRIT_VERSION}" > "${GERRIT_VERSIONFILE}"
         echo "${GERRIT_VERSIONFILE} written."
       else
         echo "Upgrading fail!"
