@@ -14,16 +14,13 @@ ENV GERRIT_INIT_ARGS ""
 RUN useradd -m -d "${GERRIT_HOME}" -s /usr/sbin/nologin -U "${GERRIT_USER}"
 
 RUN set -x && \
-    apt-get update && DEBIAN_FRONTEND=nointeractive apt-get install -y \
-      ca-certificates \
+    apt-get update && DEBIAN_FRONTEND=nointeractive apt-get install -y --no-install-recommends \
       curl \
       dirmngr \
       git \
       gitweb \
       gnupg \
       libcgi-pm-perl \
-      openssh-server \
-      openssl \
       procmail \
       wget
 
