@@ -1,14 +1,21 @@
 # Gerrit Docker image
+
  The Gerrit code review system with PostgreSQL and OpenLDAP integration supported.
- This image is based on the Alpine Linux project which makes this image smaller and faster than before.
+ This image is based on the openjdk:jre-alpine or the openjdk:jre-slim which makes this image small and fast.
 
 ## Versions
+
+#### Alpine base
 
  * openfrontier/gerrit:latest -> 2.14.5.1
  * openfrontier/gerrit:2.13.x -> 2.13.9
  * openfrontier/gerrit:2.12.x -> 2.12.7
  * openfrontier/gerrit:2.11.x -> 2.11.10
  * openfrontier/gerrit:2.10.x -> 2.10.6
+
+#### Debian base
+
+ * openfrontier/gerrit:jre-slim -> 2.14.5.1
 
 ## Container Quickstart
 
