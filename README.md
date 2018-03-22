@@ -7,7 +7,7 @@
 
 #### Alpine base
 
- * openfrontier/gerrit:latest -> 2.14.5.1
+ * openfrontier/gerrit:latest -> 2.14.6
  * openfrontier/gerrit:2.13.x -> 2.13.9
  * openfrontier/gerrit:2.12.x -> 2.12.7
  * openfrontier/gerrit:2.11.x -> 2.11.10
@@ -15,7 +15,7 @@
 
 #### Debian base
 
- * openfrontier/gerrit:jre-slim -> 2.14.5.1
+ * openfrontier/gerrit:jre-slim -> 2.14.6
 
 ## Container Quickstart
 
