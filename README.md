@@ -5,7 +5,7 @@
 ## Versions
 
  * openfrontier/gerrit:latest -> 2.14.7
- * openfrontier/gerrit:2.13.x -> 2.13.10
+ * openfrontier/gerrit:2.13.x -> 2.13.11
  * openfrontier/gerrit:2.12.x -> 2.12.7
  * openfrontier/gerrit:2.11.x -> 2.11.10
  * openfrontier/gerrit:2.10.x -> 2.10.6
