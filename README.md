@@ -19,12 +19,11 @@
  * openfrontier/gerrit:jre-slim -> 2.14.8
 
 ## Migrate offline from ReviewDB to NoteDB
-  Since Gerrit 2.15, NoteDB is recommended to store account data, group data and change data.
+  Since Gerrit 2.15, [NoteDB](https://gerrit-review.googlesource.com/Documentation/note-db.html) is recommended to store account data, group data and change data.
   Accounts and Groups are migrated offline to NoteDB automatically during the start up of the container.
   Change data can be migrated to NoteDB offline via the `MIGRATE_TO_NOTE_DB_OFFLINE` environment variable.
   Note that migrating changes can takes about twice as long as an offline reindex. In fact, one of the
   migration steps is a full reindex, so it can't possibly take less time.
-  This feature is only available in Gerrit version 2.15 and above.
 
   ```shell
     docker run \
@@ -34,6 +33,17 @@
         -p 29418:29418 \
         -d openfrontier/gerrit
   ```
+  Online migration of change data is also available via the `NOTEDB_CHANGES_AUTOMIGRATE` environment variable.
+
+  ```shell
+    docker run \
+        -e NOTEDB_CHANGES_AUTOMIGRATE=true \
+        -v ~/gerrit_volume:/var/gerrit/review_site \
+        -p 8080:8080 \
+        -p 29418:29418 \
+        -d openfrontier/gerrit
+  ```
+  This feature is only available in Gerrit version 2.15 and above.
 
 ## Container Quickstart
 

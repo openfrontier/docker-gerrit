@@ -84,7 +84,8 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   fi
 
   #Section noteDB
-  [ -z "${NOTEDB_ACCOUNTS_SEQUENCEBATCHSIZE}" ] || set_gerrit_config notedb.accounts.sequenceBatchSize "${NOTEDB_ACCOUNTS_SEQUENCEBATCHSIZE}"
+  [ -z "${NOTEDB_ACCOUNTS_SEQUENCEBATCHSIZE}" ] || set_gerrit_config noteDB.accounts.sequenceBatchSize "${NOTEDB_ACCOUNTS_SEQUENCEBATCHSIZE}"
+  [ -z "${NOTEDB_CHANGES_AUTOMIGRATE}" ]        || set_gerrit_config noteDB.changes.autoMigrate "${NOTEDB_ACCOUNTS_SEQUENCEBATCHSIZE}"
 
   #Section auth
   [ -z "${AUTH_TYPE}" ]                  || set_gerrit_config auth.type "${AUTH_TYPE}"
