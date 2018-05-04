@@ -237,7 +237,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   if [ $? -eq 0 ]; then
     GERRIT_VERSIONFILE="${GERRIT_SITE}/gerrit_version"
 
-    if [ -n "${MIGRATE_TO_NOTE_DB_OFFLINE}" ]; then
+    if [ -n "${MIGRATE_TO_NOTEDB_OFFLINE}" ]; then
       echo "Migrating changes from ReviewDB to NoteDB..."
       su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" migrate-to-note-db -d "${GERRIT_SITE}"
       if [ $? -eq 0 ]; then
