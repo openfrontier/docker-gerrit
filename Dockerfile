@@ -33,7 +33,10 @@ RUN set -ex; \
 	\
 # verify the signature
 	export GNUPGHOME="$(mktemp -d)"; \
-	gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; \
+	key='B42F6819007F00F88E364FD4036A9C25BF357DD4'; \
+	gpg --yes --always-trust --keyserver pgp.mit.edu --recv-keys "$key" || \
+	gpg --yes --always-trust --keyserver keyserver.pgp.com --recv-keys "$key" || \
+	gpg --yes --always-trust --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
 	gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; \
 	rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc; \
 	\
