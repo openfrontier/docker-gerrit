@@ -6,7 +6,7 @@ MAINTAINER zsx <thinkernel@gmail.com>
 ENV GERRIT_HOME /var/gerrit
 ENV GERRIT_SITE ${GERRIT_HOME}/review_site
 ENV GERRIT_WAR ${GERRIT_HOME}/gerrit.war
-ENV GERRIT_VERSION 2.14.7
+ENV GERRIT_VERSION 2.14.8
 ENV GERRIT_USER gerrit2
 ENV GERRIT_INIT_ARGS ""
 
@@ -70,7 +70,7 @@ RUN wget -O ${GERRIT_HOME}/gitiles.jar \
     ${GERRITFORGE_URL}/job/plugin-gitiles-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/gitiles/gitiles.jar
 
 #oauth2 plugin
-ENV GERRIT_OAUTH_VERSION 2.14.3
+ENV GERRIT_OAUTH_VERSION 2.14.6
 
 RUN wget -O "${GERRIT_HOME}/gerrit-oauth-provider.jar" \
     https://github.com/davido/gerrit-oauth-provider/releases/download/v${GERRIT_OAUTH_VERSION}/gerrit-oauth-provider.jar

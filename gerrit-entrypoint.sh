@@ -166,6 +166,12 @@ if [ "$1" = "/gerrit-start.sh" ]; then
     [ -z "${OAUTH_BITBUCKET_CLIENT_ID}" ]          || set_gerrit_config plugin.gerrit-oauth-provider-bitbucket-oauth.client-id "${OAUTH_BITBUCKET_CLIENT_ID}"
     [ -z "${OAUTH_BITBUCKET_CLIENT_SECRET}" ]      || set_gerrit_config plugin.gerrit-oauth-provider-bitbucket-oauth.client-secret "${OAUTH_BITBUCKET_CLIENT_SECRET}"
     [ -z "${OAUTH_BITBUCKET_FIX_LEGACY_USER_ID}" ] || set_gerrit_config plugin.gerrit-oauth-provider-bitbucket-oauth.fix-legacy-user-id "${OAUTH_BITBUCKET_FIX_LEGACY_USER_ID}"
+
+    # Keycloak
+    [ -z "${OAUTH_KEYCLOAK_CLIENT_ID}" ]     || set_gerrit_config plugin.gerrit-oauth-provider-keycloak-oauth.client-id "${OAUTH_KEYCLOAK_CLIENT_ID}"
+    [ -z "${OAUTH_KEYCLOAK_CLIENT_SECRET}" ] || set_gerrit_config plugin.gerrit-oauth-provider-keycloak-oauth.client-secret "${OAUTH_KEYCLOAK_CLIENT_SECRET}"
+    [ -z "${OAUTH_KEYCLOAK_REALM}" ]         || set_gerrit_config plugin.gerrit-oauth-provider-keycloak-oauth.realm "${OAUTH_KEYCLOAK_REALM}"
+    [ -z "${OAUTH_KEYCLOAK_ROOT_URL}" ]      || set_gerrit_config plugin.gerrit-oauth-provider-keycloak-oauth.root-url "${OAUTH_KEYCLOAK_ROOT_URL}"
   fi
 
   #Section container
@@ -201,7 +207,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   set_gerrit_config plugins.allowRemoteAdmin true
 
   #Section plugin events-log
-  set_gerrit_config plugin.events-log.storeUrl "jdbc:h2:${GERRIT_SITE}/db/ChangeEvents"
+  set_gerrit_config plugin.events-log.storeUrl ${GERRIT_EVENTS_LOG_STOREURL:-"jdbc:h2:${GERRIT_SITE}/db/ChangeEvents"}
 
   #Section httpd
   [ -z "${HTTPD_LISTENURL}" ] || set_gerrit_config httpd.listenUrl "${HTTPD_LISTENURL}"

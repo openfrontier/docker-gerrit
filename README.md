@@ -7,7 +7,7 @@
 
 #### Alpine base
 
- * openfrontier/gerrit:latest -> 2.14.7
+ * openfrontier/gerrit:latest -> 2.14.8
  * openfrontier/gerrit:2.13.x -> 2.13.9
  * openfrontier/gerrit:2.12.x -> 2.12.7
  * openfrontier/gerrit:2.11.x -> 2.11.10
@@ -225,7 +225,7 @@ before returning which will cause the container to exit soon after.
 
 ## Sample operational scripts
 
-   An example to demonstrate the way of extending this Gerrit container to integrate with Jenkins are located in [openfrontier/gerrit-docker](https://github.com/openfrontier/gerrit-docker) project.
+   An example to demonstrate how to extend this Gerrit image to integrate with Jenkins are located in the [openfrontier/gerrit-ci](https://hub.docker.com/r/openfrontier/gerrit-ci/) .
 
    A Jenkins docker image with some sample scripts to integrate with this Gerrit image can be pulled from [openfrontier/jenkins](https://hub.docker.com/r/openfrontier/jenkins/).
 
