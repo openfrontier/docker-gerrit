@@ -21,7 +21,9 @@ RUN set -x && \
       gitweb \
       gnupg \
       libcgi-pm-perl \
+      netcat \
       procmail \
+      openssh-client \
       wget
 
 # Install gosu for easy step-down from root
