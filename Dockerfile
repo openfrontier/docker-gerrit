@@ -22,6 +22,7 @@ RUN set -x && \
       gnupg \
       libcgi-pm-perl \
       procmail \
+      openssh-client \
       wget
 
 # Install gosu for easy step-down from root
