@@ -15,7 +15,7 @@
 
 #### Debian base
 
- * openfrontier/gerrit:jre-slim -> 2.14.8
+ * openfrontier/gerrit:slim -> 2.14.8
 
 ## Container Quickstart
 
