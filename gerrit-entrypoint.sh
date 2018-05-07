@@ -83,6 +83,10 @@ if [ "$1" = "/gerrit-start.sh" ]; then
     [ -z "${DB_ENV_MYSQL_PASSWORD}" ] || set_secure_config database.password "${DB_ENV_MYSQL_PASSWORD}"
   fi
 
+  #Section noteDB
+  [ -z "${NOTEDB_ACCOUNTS_SEQUENCEBATCHSIZE}" ] || set_gerrit_config noteDB.accounts.sequenceBatchSize "${NOTEDB_ACCOUNTS_SEQUENCEBATCHSIZE}"
+  [ -z "${NOTEDB_CHANGES_AUTOMIGRATE}" ]        || set_gerrit_config noteDB.changes.autoMigrate "${NOTEDB_ACCOUNTS_SEQUENCEBATCHSIZE}"
+
   #Section auth
   [ -z "${AUTH_TYPE}" ]                  || set_gerrit_config auth.type "${AUTH_TYPE}"
   [ -z "${AUTH_HTTP_HEADER}" ]           || set_gerrit_config auth.httpHeader "${AUTH_HTTP_HEADER}"
@@ -233,6 +237,19 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   if [ $? -eq 0 ]; then
     GERRIT_VERSIONFILE="${GERRIT_SITE}/gerrit_version"
 
+    if [ -n "${MIGRATE_TO_NOTEDB_OFFLINE}" ]; then
+      echo "Migrating changes from ReviewDB to NoteDB..."
+      su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" migrate-to-note-db -d "${GERRIT_SITE}"
+      if [ $? -eq 0 ]; then
+        echo "Upgrading is OK. Writing versionfile ${GERRIT_VERSIONFILE}"
+        su-exec ${GERRIT_USER} touch "${GERRIT_VERSIONFILE}"
+        su-exec ${GERRIT_USER} echo "${GERRIT_VERSION}" > "${GERRIT_VERSIONFILE}"
+        echo "${GERRIT_VERSIONFILE} written."
+        IGNORE_VERSIONCHECK=1
+      else
+        echo "Upgrading fail!"
+      fi
+    fi
     if [ -n "${IGNORE_VERSIONCHECK}" ]; then
       echo "Don't perform a version check and never do a full reindex"
       NEED_REINDEX=0
