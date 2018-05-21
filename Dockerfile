@@ -5,10 +5,10 @@ MAINTAINER zsx <thinkernel@gmail.com>
 # Overridable defaults
 ARG GERRIT_USER=gerrit2
 ARG GERRIT_HOME=/var/lib/gerrit
-ARG GERRIT_VERSION=2.14.5.1
-ARG PLUGIN_VERSION=bazel-stable-2.14
+ARG GERRIT_VERSION=2.15.1
+ARG PLUGIN_VERSION=bazel-stable-2.15
 ARG GERRIT_INIT_ARGS=""
-ARG GERRIT_OAUTH_VERSION=2.14.3
+ARG GERRIT_OAUTH_VERSION=2.14.6
 
 # Environment to use both at build time and at run time
 ENV \

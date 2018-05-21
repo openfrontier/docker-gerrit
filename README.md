@@ -1,14 +1,55 @@
 # Gerrit Docker image
+
  The Gerrit code review system with PostgreSQL and OpenLDAP integration supported.
- This image is based on the Alpine Linux project which makes this image smaller and faster than before.
+ This image is based on the openjdk:jre-alpine or the openjdk:jre-slim which makes this image small and fast.
 
-## Versions
+## Branches and Tags
 
- * openfrontier/gerrit:latest -> 2.14.5.1
+ The `latest` and `slim` are not production ready because new features will be tested on them first.
+ The branch tags like `2.14.x` or `2.15.x` are used to track the releases of Gerrit. Approved new features will be merged to these branches first then included in the next [release](https://github.com/openfrontier/docker-gerrit/releases).
+
+#### Alpine base
+
+ * openfrontier/gerrit:latest -> 2.15.1
+ * openfrontier/gerrit:2.15.x -> 2.15.1
+ * openfrontier/gerrit:2.14.x -> 2.14.8
  * openfrontier/gerrit:2.13.x -> 2.13.9
  * openfrontier/gerrit:2.12.x -> 2.12.7
  * openfrontier/gerrit:2.11.x -> 2.11.10
  * openfrontier/gerrit:2.10.x -> 2.10.6
+
+#### Debian base
+
+ * openfrontier/gerrit:slim -> 2.15.1
+ * openfrontier/gerrit:2.15.x-slim -> 2.15.1
+ * openfrontier/gerrit:2.14.x-slim -> 2.14.8
+
+## Migrate from ReviewDB to NoteDB
+  Since Gerrit 2.15, [NoteDB](https://gerrit-review.googlesource.com/Documentation/note-db.html) is recommended to store account data, group data and change data.
+  Accounts and Groups are migrated offline to NoteDB automatically during the start up of the container.
+  Change data can be migrated to NoteDB offline via the `MIGRATE_TO_NOTEDB_OFFLINE` environment variable.
+  Note that migrating changes can takes about twice as long as an offline reindex. In fact, one of the
+  migration steps is a full reindex, so it can't possibly take less time.
+
+  ```shell
+    docker run \
+        -e MIGRATE_TO_NOTEDB_OFFLINE=1 \
+        -v ~/gerrit_volume:/var/gerrit/review_site \
+        -p 8080:8080 \
+        -p 29418:29418 \
+        -d openfrontier/gerrit
+  ```
+  Online migration of change data is also available via the `NOTEDB_CHANGES_AUTOMIGRATE` environment variable.
+
+  ```shell
+    docker run \
+        -e NOTEDB_CHANGES_AUTOMIGRATE=true \
+        -v ~/gerrit_volume:/var/gerrit/review_site \
+        -p 8080:8080 \
+        -p 29418:29418 \
+        -d openfrontier/gerrit
+  ```
+  This feature is only available in Gerrit version 2.15 and above.
 
 ## Container Quickstart
 
@@ -218,7 +259,7 @@ before returning which will cause the container to exit soon after.
 
 ## Sample operational scripts
 
-   An example to demonstrate the way of extending this Gerrit container to integrate with Jenkins are located in [openfrontier/gerrit-docker](https://github.com/openfrontier/gerrit-docker) project.
+   An example to demonstrate how to extend this Gerrit image to integrate with Jenkins are located in the [openfrontier/gerrit-ci](https://hub.docker.com/r/openfrontier/gerrit-ci/) .
 
    A Jenkins docker image with some sample scripts to integrate with this Gerrit image can be pulled from [openfrontier/jenkins](https://hub.docker.com/r/openfrontier/jenkins/).
 

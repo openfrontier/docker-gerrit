@@ -78,6 +78,10 @@ if [ "$1" = "/gerrit-start.sh" ]; then
     [ -z "${DB_ENV_MYSQL_PASSWORD}" ] || set_secure_config database.password "${DB_ENV_MYSQL_PASSWORD}"
   fi
 
+  #Section noteDB
+  [ -z "${NOTEDB_ACCOUNTS_SEQUENCEBATCHSIZE}" ] || set_gerrit_config noteDB.accounts.sequenceBatchSize "${NOTEDB_ACCOUNTS_SEQUENCEBATCHSIZE}"
+  [ -z "${NOTEDB_CHANGES_AUTOMIGRATE}" ]        || set_gerrit_config noteDB.changes.autoMigrate "${NOTEDB_ACCOUNTS_SEQUENCEBATCHSIZE}"
+
   #Section auth
   [ -z "${AUTH_TYPE}" ]                  || set_gerrit_config auth.type "${AUTH_TYPE}"
   [ -z "${AUTH_HTTP_HEADER}" ]           || set_gerrit_config auth.httpHeader "${AUTH_HTTP_HEADER}"
@@ -142,10 +146,11 @@ if [ "$1" = "/gerrit-start.sh" ]; then
     [ -z "${OAUTH_ALLOW_REGISTER_NEW_EMAIL}" ] || set_gerrit_config oauth.allowRegisterNewEmail "${OAUTH_ALLOW_REGISTER_NEW_EMAIL}"
 
     # Google
-    [ -z "${OAUTH_GOOGLE_RESTRICT_DOMAIN}" ]   || set_gerrit_config plugin.gerrit-oauth-provider-google-oauth.domain "${OAUTH_GOOGLE_RESTRICT_DOMAIN}"
-    [ -z "${OAUTH_GOOGLE_CLIENT_ID}" ]         || set_gerrit_config plugin.gerrit-oauth-provider-google-oauth.client-id "${OAUTH_GOOGLE_CLIENT_ID}"
-    [ -z "${OAUTH_GOOGLE_CLIENT_SECRET}" ]     || set_gerrit_config plugin.gerrit-oauth-provider-google-oauth.client-secret "${OAUTH_GOOGLE_CLIENT_SECRET}"
-    [ -z "${OAUTH_GOOGLE_LINK_OPENID}" ]       || set_gerrit_config plugin.gerrit-oauth-provider-google-oauth.link-to-existing-openid-accounts "${OAUTH_GOOGLE_LINK_OPENID}"
+    [ -z "${OAUTH_GOOGLE_RESTRICT_DOMAIN}" ]       || set_gerrit_config plugin.gerrit-oauth-provider-google-oauth.domain "${OAUTH_GOOGLE_RESTRICT_DOMAIN}"
+    [ -z "${OAUTH_GOOGLE_CLIENT_ID}" ]             || set_gerrit_config plugin.gerrit-oauth-provider-google-oauth.client-id "${OAUTH_GOOGLE_CLIENT_ID}"
+    [ -z "${OAUTH_GOOGLE_CLIENT_SECRET}" ]         || set_gerrit_config plugin.gerrit-oauth-provider-google-oauth.client-secret "${OAUTH_GOOGLE_CLIENT_SECRET}"
+    [ -z "${OAUTH_GOOGLE_LINK_OPENID}" ]           || set_gerrit_config plugin.gerrit-oauth-provider-google-oauth.link-to-existing-openid-accounts "${OAUTH_GOOGLE_LINK_OPENID}"
+    [ -z "${OAUTH_GOOGLE_USE_EMAIL_AS_USERNAME}" ] || set_gerrit_config plugin.gerrit-oauth-provider-google-oauth.use-email-as-username "${OAUTH_GOOGLE_USE_EMAIL_AS_USERNAME}"
 
     # Github
     [ -z "${OAUTH_GITHUB_CLIENT_ID}" ]         || set_gerrit_config plugin.gerrit-oauth-provider-github-oauth.client-id "${OAUTH_GITHUB_CLIENT_ID}"
@@ -160,6 +165,12 @@ if [ "$1" = "/gerrit-start.sh" ]; then
     [ -z "${OAUTH_BITBUCKET_CLIENT_ID}" ]          || set_gerrit_config plugin.gerrit-oauth-provider-bitbucket-oauth.client-id "${OAUTH_BITBUCKET_CLIENT_ID}"
     [ -z "${OAUTH_BITBUCKET_CLIENT_SECRET}" ]      || set_gerrit_config plugin.gerrit-oauth-provider-bitbucket-oauth.client-secret "${OAUTH_BITBUCKET_CLIENT_SECRET}"
     [ -z "${OAUTH_BITBUCKET_FIX_LEGACY_USER_ID}" ] || set_gerrit_config plugin.gerrit-oauth-provider-bitbucket-oauth.fix-legacy-user-id "${OAUTH_BITBUCKET_FIX_LEGACY_USER_ID}"
+
+    # Keycloak
+    [ -z "${OAUTH_KEYCLOAK_CLIENT_ID}" ]     || set_gerrit_config plugin.gerrit-oauth-provider-keycloak-oauth.client-id "${OAUTH_KEYCLOAK_CLIENT_ID}"
+    [ -z "${OAUTH_KEYCLOAK_CLIENT_SECRET}" ] || set_gerrit_config plugin.gerrit-oauth-provider-keycloak-oauth.client-secret "${OAUTH_KEYCLOAK_CLIENT_SECRET}"
+    [ -z "${OAUTH_KEYCLOAK_REALM}" ]         || set_gerrit_config plugin.gerrit-oauth-provider-keycloak-oauth.realm "${OAUTH_KEYCLOAK_REALM}"
+    [ -z "${OAUTH_KEYCLOAK_ROOT_URL}" ]      || set_gerrit_config plugin.gerrit-oauth-provider-keycloak-oauth.root-url "${OAUTH_KEYCLOAK_ROOT_URL}"
   fi
 
   #Section container
@@ -195,7 +206,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   set_gerrit_config plugins.allowRemoteAdmin true
 
   #Section plugin events-log
-  set_gerrit_config plugin.events-log.storeUrl "jdbc:h2:${GERRIT_SITE}/db/ChangeEvents"
+  set_gerrit_config plugin.events-log.storeUrl ${GERRIT_EVENTS_LOG_STOREURL:-"jdbc:h2:${GERRIT_SITE}/db/ChangeEvents"}
 
   #Section httpd
   [ -z "${HTTPD_LISTENURL}" ] || set_gerrit_config httpd.listenUrl "${HTTPD_LISTENURL}"
@@ -221,6 +232,19 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   if [ $? -eq 0 ]; then
     GERRIT_VERSIONFILE="${GERRIT_SITE}/gerrit_version"
 
+    if [ -n "${MIGRATE_TO_NOTEDB_OFFLINE}" ]; then
+      echo "Migrating changes from ReviewDB to NoteDB..."
+      su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" migrate-to-note-db -d "${GERRIT_SITE}"
+      if [ $? -eq 0 ]; then
+        echo "Upgrading is OK. Writing versionfile ${GERRIT_VERSIONFILE}"
+        su-exec ${GERRIT_USER} touch "${GERRIT_VERSIONFILE}"
+        su-exec ${GERRIT_USER} echo "${GERRIT_VERSION}" > "${GERRIT_VERSIONFILE}"
+        echo "${GERRIT_VERSIONFILE} written."
+        IGNORE_VERSIONCHECK=1
+      else
+        echo "Upgrading fail!"
+      fi
+    fi
     if [ -n "${IGNORE_VERSIONCHECK}" ]; then
       echo "Don't perform a version check and never do a full reindex"
       NEED_REINDEX=0
