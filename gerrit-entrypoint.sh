@@ -176,6 +176,13 @@ if [ "$1" = "/gerrit-start.sh" ]; then
     [ -z "${OAUTH_KEYCLOAK_CLIENT_SECRET}" ] || set_gerrit_config plugin.gerrit-oauth-provider-keycloak-oauth.client-secret "${OAUTH_KEYCLOAK_CLIENT_SECRET}"
     [ -z "${OAUTH_KEYCLOAK_REALM}" ]         || set_gerrit_config plugin.gerrit-oauth-provider-keycloak-oauth.realm "${OAUTH_KEYCLOAK_REALM}"
     [ -z "${OAUTH_KEYCLOAK_ROOT_URL}" ]      || set_gerrit_config plugin.gerrit-oauth-provider-keycloak-oauth.root-url "${OAUTH_KEYCLOAK_ROOT_URL}"
+
+    # CAS
+    [ -z "${OAUTH_CAS_ROOT_URL}" ]           || set_gerrit_config plugin.gerrit-oauth-provider-cas-oauth.root-url "${OAUTH_CAS_ROOT_URL}"
+    [ -z "${OAUTH_CAS_CLIENT_ID}" ]          || set_gerrit_config plugin.gerrit-oauth-provider-cas-oauth.client-id "${OAUTH_CAS_CLIENT_ID}"
+    [ -z "${OAUTH_CAS_CLIENT_SECRET}" ]      || set_gerrit_config plugin.gerrit-oauth-provider-cas-oauth.client-secret "${OAUTH_CAS_CLIENT_SECRET}"
+    [ -z "${OAUTH_CAS_LINK_OPENID}" ]        || set_gerrit_config plugin.gerrit-oauth-provider-cas-oauth.link-to-existing-openid-accounts "${OAUTH_CAS_LINK_OPENID}"
+    [ -z "${OAUTH_CAS_FIX_LEGACY_USER_ID}" ] || set_gerrit_config plugin.gerrit-oauth-provider-cas-oauth.fix-legacy-user-id "${OAUTH_CAS_FIX_LEGACY_USER_ID}"
   fi
 
   #Section container
