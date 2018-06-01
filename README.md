@@ -3,11 +3,15 @@
  The Gerrit code review system with PostgreSQL and OpenLDAP integration supported.
  This image is based on the openjdk:jre-alpine or the openjdk:jre-slim which makes this image small and fast.
 
-## Versions
+## Branches and Tags
+
+ The `latest` and `slim` are not production ready because new features will be tested on them first.
+ The branch tags like `2.14.x` or `2.15.x` are used to track the releases of Gerrit. Approved new features will be merged to these branches first then included in the next [release](https://github.com/openfrontier/docker-gerrit/releases).
 
 #### Alpine base
 
- * openfrontier/gerrit:latest -> 2.15.1
+ * openfrontier/gerrit:latest -> 2.15.2
+ * openfrontier/gerrit:2.15.x -> 2.15.2
  * openfrontier/gerrit:2.14.x -> 2.14.8
  * openfrontier/gerrit:2.13.x -> 2.13.9
  * openfrontier/gerrit:2.12.x -> 2.12.7
