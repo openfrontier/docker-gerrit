@@ -61,7 +61,9 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   [ -z "${GITHTTPURL}" ] || set_gerrit_config gerrit.gitHttpUrl "${GITHTTPURL}"
 
   #Section sshd
-  [ -z "${LISTEN_ADDR}" ] || set_gerrit_config sshd.listenAddress "${LISTEN_ADDR}"
+  [ -z "${LISTEN_ADDR}" ]             || set_gerrit_config sshd.listenAddress "${LISTEN_ADDR}"
+  [ -z "${SSHD_ADVERTISE_ADDR}" ]     || set_gerrit_config sshd.advertisedAddress "${SSHD_ADVERTISE_ADDR}"
+  [ -z "${SSHD_ENABLE_COMPRESSION}" ] || set_gerrit_config sshd.enableCompression "${SSHD_ENABLE_COMPRESSION}"
 
   #Section database
   if [ "${DATABASE_TYPE}" = 'postgresql' ]; then
