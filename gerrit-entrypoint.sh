@@ -55,6 +55,12 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   done
 
   #Customize gerrit.config
+  if [ -n "${DOWNLOAD_SCHEMES}" ]; then
+    set_gerrit_config --unset-all download.scheme || true
+    for s in ${DOWNLOAD_SCHEMES}; do
+      set_gerrit_config --add download.scheme ${s}
+    done
+  fi
 
   #Section gerrit
   [ -z "${WEBURL}" ] || set_gerrit_config gerrit.canonicalWebUrl "${WEBURL}"
