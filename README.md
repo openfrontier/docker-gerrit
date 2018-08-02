@@ -230,6 +230,29 @@
     -e OAUTH_BITBUCKET_FIX_LEGACY_USER_ID=true \
     -d openfrontier/gerrit
   ```
+## Setup Replication with one BitBucket remote
+
+  ```shell
+    docker run \
+    --name gerrit \
+    -p 8080:8080 \
+    -p 29418:29418 \
+    -e WEBURL=http://my-gerrit.example.com \
+    -e DOWNLOAD_SCHEMES="http ssh" \
+    -e GERRIT_INIT_ARGS="--install-plugin=replication" \
+    -e REPLICATION_REMOTES=bitbucket \
+    -e BITBUCKET_REMOTE=https://${BB_USER}@bitbucket.org/${BB_ORG}/${name}.git \
+    -e BITBUCKET_PASSWORD=${BITBUCKET_PASSWORD} \
+    -e BITBUCKET_MIRROR=true \
+    -e BITBUCKET_PROJECTS=example \
+    -e BITBUCKET_REPLICATE_ON_STARTUP=true \
+    -e GITHUB_REMOTE=https://${GH_USER}@github.com/${GH_ORG}/${name}.git \
+    -e GITHUB_PASSWORD=${GITHUB_PASSWORD} \
+    -e GITHUB_MIRROR=true \
+    -e GITHUB_PROJECTS=example \
+    -e GITHUB_REPLICATE_ON_STARTUP=true \
+    -d openfrontier/gerrit
+  ```
 
 ## Using gitiles instead of gitweb
 
@@ -290,16 +313,16 @@ before returning which will cause the container to exit soon after.
    There's an [upper project](https://github.com/openfrontier/ci) which privdes sample scripts about how to use this image and a [Jenkins image](https://hub.docker.com/r/openfrontier/jenkins/) to create a Gerrit-Jenkins integration environment. And there's a [compose project](https://github.com/openfrontier/ci-compose) to demonstrate how to utilize docker compose to accomplish the same thing.
 
 ## Sync timezone with the host server.
- 
+
     docker run -d -p 8080:8080 -p 29418:29418 -v /etc/localtime:/etc/localtime:ro openfrontier/gerrit
 
 ## Automatic reindex detection
 
   The docker container automatically writes the current gerrit version into `${GERRIT_HOME}/review_site/gerrit_version`
-  in order to detect whether a full upgrade should be performed. 
+  in order to detect whether a full upgrade should be performed.
   This check can be disabled via the `IGNORE_VERSIONCHECK` environment variable.
 
-  Note that for major version upgrades a full reindex might be necessary. Check the gerrit upgrade notes for details. 
+  Note that for major version upgrades a full reindex might be necessary. Check the gerrit upgrade notes for details.
   For large repositories, the full reindex can take 30min or more.
 
   ```shell
