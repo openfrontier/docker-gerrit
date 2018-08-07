@@ -1,6 +1,6 @@
 # Gerrit Docker image
 
- The Gerrit code review system with PostgreSQL and OpenLDAP integration supported.
+ The Gerrit code review system with external database and OpenLDAP integration.
  This image is based on the openjdk:jre-alpine or the openjdk:jre-slim which makes this image small and fast.
 
 ## Branches and Tags
@@ -10,9 +10,9 @@
 
 #### Alpine base
 
- * openfrontier/gerrit:latest -> 2.15.2
- * openfrontier/gerrit:2.15.x -> 2.15.2
- * openfrontier/gerrit:2.14.x -> 2.14.8
+ * openfrontier/gerrit:latest -> 2.15.3
+ * openfrontier/gerrit:2.15.x -> 2.15.3
+ * openfrontier/gerrit:2.14.x -> 2.14.9
  * openfrontier/gerrit:2.13.x -> 2.13.9
  * openfrontier/gerrit:2.12.x -> 2.12.7
  * openfrontier/gerrit:2.11.x -> 2.11.10
@@ -20,8 +20,8 @@
 
 #### Debian base
 
- * openfrontier/gerrit:2.15.x-slim -> 2.15.2
- * openfrontier/gerrit:2.14.x-slim -> 2.14.8
+ * openfrontier/gerrit:2.15.x-slim -> 2.15.3
+ * openfrontier/gerrit:2.14.x-slim -> 2.14.9
 
 ## Migrate from ReviewDB to NoteDB
   Since Gerrit 2.15, [NoteDB](https://gerrit-review.googlesource.com/Documentation/note-db.html) is recommended to store account data, group data and change data.
@@ -107,9 +107,34 @@
   RUN chmod +x /docker-entrypoint-init.d/*.sh /docker-entrypoint-init.d/*.nohup
   ```
 
-## Run dockerized gerrit with dockerized PostgreSQL and OpenLDAP.
+## Run dockerized gerrit with external database and OpenLDAP.
+
+##### All attributes in [gerrit.config database section](https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#database) are supported.
 
 ##### All attributes in [gerrit.config ldap section](https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#ldap) are supported.
+
+  ```shell
+    #Start gerrit docker to connect with an already existed postgres.
+    docker run \
+    --name gerrit \
+    -p 8080:8080 \
+    -p 29418:29418 \
+    -e WEBURL=http://your.site.domain:8080 \
+    -e DATABASE_TYPE=postgresql \
+    -e DATABASE_HOSTNAME=postgres.hostname \
+    -e DATABASE_PORT=5432 \
+    -e DATABASE_DATABASE=reviewdb \
+    -e DATABASE_USERNAME=gerrit2 \
+    -e DATABASE_PASSWORD=gerrit \
+    -e AUTH_TYPE=LDAP \
+    -e LDAP_SERVER=ldap://ldap.server.address \
+    -e LDAP_ACCOUNTBASE=<ldap-basedn> \
+    -d openfrontier/gerrit
+  ```
+
+## Run dockerized gerrit with dockerized PostgreSQL and OpenLDAP.
+
+#### Note: docker --link is deprecated and this way might be unsupported in the future release.
 
   ```shell
     # Start postgres docker
@@ -183,7 +208,7 @@
     -p 29418:29418 \
     -e AUTH_TYPE=OAUTH \
     # Don't forget to set Gerrit FQDN for correct OAuth
-    -e WEB_URL=http://my-gerrit.example.com/
+    -e WEBURL=http://my-gerrit.example.com \
     -e OAUTH_ALLOW_EDIT_FULL_NAME=true \
     -e OAUTH_ALLOW_REGISTER_NEW_EMAIL=true \
     # Google OAuth
@@ -265,16 +290,16 @@ before returning which will cause the container to exit soon after.
    There's an [upper project](https://github.com/openfrontier/ci) which privdes sample scripts about how to use this image and a [Jenkins image](https://hub.docker.com/r/openfrontier/jenkins/) to create a Gerrit-Jenkins integration environment. And there's a [compose project](https://github.com/openfrontier/ci-compose) to demonstrate how to utilize docker compose to accomplish the same thing.
 
 ## Sync timezone with the host server.
- 
+
     docker run -d -p 8080:8080 -p 29418:29418 -v /etc/localtime:/etc/localtime:ro openfrontier/gerrit
 
 ## Automatic reindex detection
 
   The docker container automatically writes the current gerrit version into `${GERRIT_HOME}/review_site/gerrit_version`
-  in order to detect whether a full upgrade should be performed. 
+  in order to detect whether a full upgrade should be performed.
   This check can be disabled via the `IGNORE_VERSIONCHECK` environment variable.
 
-  Note that for major version upgrades a full reindex might be necessary. Check the gerrit upgrade notes for details. 
+  Note that for major version upgrades a full reindex might be necessary. Check the gerrit upgrade notes for details.
   For large repositories, the full reindex can take 30min or more.
 
   ```shell
