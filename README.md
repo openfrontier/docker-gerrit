@@ -10,8 +10,8 @@
 
 #### Alpine base
 
- * openfrontier/gerrit:latest -> 2.15.2
- * openfrontier/gerrit:2.15.x -> 2.15.2
+ * openfrontier/gerrit:latest -> 2.15.3
+ * openfrontier/gerrit:2.15.x -> 2.15.3
  * openfrontier/gerrit:2.14.x -> 2.14.9
  * openfrontier/gerrit:2.13.x -> 2.13.9
  * openfrontier/gerrit:2.12.x -> 2.12.7
@@ -20,7 +20,7 @@
 
 #### Debian base
 
- * openfrontier/gerrit:2.15.x-slim -> 2.15.2
+ * openfrontier/gerrit:2.15.x-slim -> 2.15.3
  * openfrontier/gerrit:2.14.x-slim -> 2.14.9
 
 ## Migrate from ReviewDB to NoteDB
@@ -208,7 +208,7 @@
     -p 29418:29418 \
     -e AUTH_TYPE=OAUTH \
     # Don't forget to set Gerrit FQDN for correct OAuth
-    -e WEB_URL=http://my-gerrit.example.com/
+    -e WEBURL=http://my-gerrit.example.com \
     -e OAUTH_ALLOW_EDIT_FULL_NAME=true \
     -e OAUTH_ALLOW_REGISTER_NEW_EMAIL=true \
     # Google OAuth
@@ -290,16 +290,16 @@ before returning which will cause the container to exit soon after.
    There's an [upper project](https://github.com/openfrontier/ci) which privdes sample scripts about how to use this image and a [Jenkins image](https://hub.docker.com/r/openfrontier/jenkins/) to create a Gerrit-Jenkins integration environment. And there's a [compose project](https://github.com/openfrontier/ci-compose) to demonstrate how to utilize docker compose to accomplish the same thing.
 
 ## Sync timezone with the host server.
- 
+
     docker run -d -p 8080:8080 -p 29418:29418 -v /etc/localtime:/etc/localtime:ro openfrontier/gerrit
 
 ## Automatic reindex detection
 
   The docker container automatically writes the current gerrit version into `${GERRIT_HOME}/review_site/gerrit_version`
-  in order to detect whether a full upgrade should be performed. 
+  in order to detect whether a full upgrade should be performed.
   This check can be disabled via the `IGNORE_VERSIONCHECK` environment variable.
 
-  Note that for major version upgrades a full reindex might be necessary. Check the gerrit upgrade notes for details. 
+  Note that for major version upgrades a full reindex might be necessary. Check the gerrit upgrade notes for details.
   For large repositories, the full reindex can take 30min or more.
 
   ```shell
