@@ -55,6 +55,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   done
 
   #Customize gerrit.config
+  #Section download
   if [ -n "${DOWNLOAD_SCHEMES}" ]; then
     set_gerrit_config --unset-all download.scheme || true
     for s in ${DOWNLOAD_SCHEMES}; do
