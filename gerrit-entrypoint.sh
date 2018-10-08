@@ -97,7 +97,9 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   [ -z "${DATABASE_DATABASE}" ] || set_gerrit_config database.database "${DATABASE_DATABASE}"
   [ -z "${DATABASE_USERNAME}" ] || set_gerrit_config database.username "${DATABASE_USERNAME}"
   [ -z "${DATABASE_PASSWORD}" ] || set_secure_config database.password "${DATABASE_PASSWORD}"
-  # Other unnecessary options
+  # JDBC URL
+  [ -z "${DATABASE_URL}" ] || set_gerrit_config database.url "${DATABASE_URL}"
+  # Other database options
   [ -z "${DATABASE_CONNECTION_POOL}" ] || set_secure_config database.connectionPool "${DATABASE_CONNECTION_POOL}"
   [ -z "${DATABASE_POOL_LIMIT}" ]      || set_secure_config database.poolLimit "${DATABASE_POOL_LIMIT}"
   [ -z "${DATABASE_POOL_MIN_IDLE}" ]   || set_secure_config database.poolMinIdle "${DATABASE_POOL_MIN_IDLE}"
