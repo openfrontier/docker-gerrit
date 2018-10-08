@@ -55,13 +55,22 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   done
 
   #Customize gerrit.config
+  #Section download
+  if [ -n "${DOWNLOAD_SCHEMES}" ]; then
+    set_gerrit_config --unset-all download.scheme || true
+    for s in ${DOWNLOAD_SCHEMES}; do
+      set_gerrit_config --add download.scheme ${s}
+    done
+  fi
 
   #Section gerrit
   [ -z "${WEBURL}" ] || set_gerrit_config gerrit.canonicalWebUrl "${WEBURL}"
   [ -z "${GITHTTPURL}" ] || set_gerrit_config gerrit.gitHttpUrl "${GITHTTPURL}"
 
   #Section sshd
-  [ -z "${LISTEN_ADDR}" ] || set_gerrit_config sshd.listenAddress "${LISTEN_ADDR}"
+  [ -z "${LISTEN_ADDR}" ]             || set_gerrit_config sshd.listenAddress "${LISTEN_ADDR}"
+  [ -z "${SSHD_ADVERTISE_ADDR}" ]     || set_gerrit_config sshd.advertisedAddress "${SSHD_ADVERTISE_ADDR}"
+  [ -z "${SSHD_ENABLE_COMPRESSION}" ] || set_gerrit_config sshd.enableCompression "${SSHD_ENABLE_COMPRESSION}"
 
   #Section database
   if [ "${DATABASE_TYPE}" = 'postgresql' ]; then
@@ -88,7 +97,9 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   [ -z "${DATABASE_DATABASE}" ] || set_gerrit_config database.database "${DATABASE_DATABASE}"
   [ -z "${DATABASE_USERNAME}" ] || set_gerrit_config database.username "${DATABASE_USERNAME}"
   [ -z "${DATABASE_PASSWORD}" ] || set_secure_config database.password "${DATABASE_PASSWORD}"
-  # Other unnecessary options
+  # JDBC URL
+  [ -z "${DATABASE_URL}" ] || set_gerrit_config database.url "${DATABASE_URL}"
+  # Other database options
   [ -z "${DATABASE_CONNECTION_POOL}" ] || set_secure_config database.connectionPool "${DATABASE_CONNECTION_POOL}"
   [ -z "${DATABASE_POOL_LIMIT}" ]      || set_secure_config database.poolLimit "${DATABASE_POOL_LIMIT}"
   [ -z "${DATABASE_POOL_MIN_IDLE}" ]   || set_secure_config database.poolMinIdle "${DATABASE_POOL_MIN_IDLE}"
@@ -97,7 +108,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
 
   #Section noteDB
   [ -z "${NOTEDB_ACCOUNTS_SEQUENCEBATCHSIZE}" ] || set_gerrit_config noteDB.accounts.sequenceBatchSize "${NOTEDB_ACCOUNTS_SEQUENCEBATCHSIZE}"
-  [ -z "${NOTEDB_CHANGES_AUTOMIGRATE}" ]        || set_gerrit_config noteDB.changes.autoMigrate "${NOTEDB_ACCOUNTS_SEQUENCEBATCHSIZE}"
+  [ -z "${NOTEDB_CHANGES_AUTOMIGRATE}" ]        || set_gerrit_config noteDB.changes.autoMigrate "${NOTEDB_CHANGES_AUTOMIGRATE}"
 
   #Section auth
   [ -z "${AUTH_TYPE}" ]                  || set_gerrit_config auth.type "${AUTH_TYPE}"
@@ -258,20 +269,8 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   if [ $? -eq 0 ]; then
     GERRIT_VERSIONFILE="${GERRIT_SITE}/gerrit_version"
 
-    if [ -n "${MIGRATE_TO_NOTEDB_OFFLINE}" ]; then
-      echo "Migrating changes from ReviewDB to NoteDB..."
-      su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" migrate-to-note-db -d "${GERRIT_SITE}"
-      if [ $? -eq 0 ]; then
-        echo "Upgrading is OK. Writing versionfile ${GERRIT_VERSIONFILE}"
-        su-exec ${GERRIT_USER} touch "${GERRIT_VERSIONFILE}"
-        su-exec ${GERRIT_USER} echo "${GERRIT_VERSION}" > "${GERRIT_VERSIONFILE}"
-        echo "${GERRIT_VERSIONFILE} written."
-        IGNORE_VERSIONCHECK=1
-      else
-        echo "Upgrading fail!"
-      fi
-    fi
-    if [ -n "${IGNORE_VERSIONCHECK}" ]; then
+    # MIGRATE_TO_NOTEDB_OFFLINE will override IGNORE_VERSIONCHECK
+    if [ -n "${IGNORE_VERSIONCHECK}" ] && [ -z "${MIGRATE_TO_NOTEDB_OFFLINE}" ]; then
       echo "Don't perform a version check and never do a full reindex"
       NEED_REINDEX=0
     else
@@ -293,8 +292,13 @@ if [ "$1" = "/gerrit-start.sh" ]; then
       fi
     fi
     if [ ${NEED_REINDEX} -eq 1 ]; then
-      echo "Reindexing..."
-      su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" reindex --verbose -d "${GERRIT_SITE}"
+      if [ -n "${MIGRATE_TO_NOTEDB_OFFLINE}" ]; then
+        echo "Migrating changes from ReviewDB to NoteDB..."
+        su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" migrate-to-note-db -d "${GERRIT_SITE}"
+      else
+        echo "Reindexing..."
+        su-exec ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" reindex --verbose -d "${GERRIT_SITE}"
+      fi
       if [ $? -eq 0 ]; then
         echo "Upgrading is OK. Writing versionfile ${GERRIT_VERSIONFILE}"
         su-exec ${GERRIT_USER} touch "${GERRIT_VERSIONFILE}"

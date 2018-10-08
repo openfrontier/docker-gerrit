@@ -32,7 +32,7 @@
 
   ```shell
     docker run \
-        -e MIGRATE_TO_NOTEDB_OFFLINE=1 \
+        -e MIGRATE_TO_NOTEDB_OFFLINE=true \
         -v ~/gerrit_volume:/var/gerrit/review_site \
         -p 8080:8080 \
         -p 29418:29418 \
@@ -239,6 +239,17 @@
     -p 8080:8080 \
     -p 29418:29418 \
     -e GITWEB_TYPE=gitiles \
+    -d openfrontier/gerrit
+  ```
+
+## Restricting download schemes  
+
+  ```shell
+    docker run \
+    --name gerrit \
+    -p 8080:8080 \
+    -p 29418:29418 \
+    -e DOWNLOAD_SCHEMES=http ssh \
     -d openfrontier/gerrit
   ```
 
