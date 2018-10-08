@@ -65,7 +65,6 @@ if [ "$1" = "/gerrit-start.sh" ]; then
 
   #Section database
   if [ "${DATABASE_TYPE}" = 'postgresql' ]; then
-    set_gerrit_config database.type "${DATABASE_TYPE}"
     [ -z "${DB_PORT_5432_TCP_ADDR}" ]    || set_gerrit_config database.hostname "${DB_PORT_5432_TCP_ADDR}"
     [ -z "${DB_PORT_5432_TCP_PORT}" ]    || set_gerrit_config database.port "${DB_PORT_5432_TCP_PORT}"
     [ -z "${DB_ENV_POSTGRES_DB}" ]       || set_gerrit_config database.database "${DB_ENV_POSTGRES_DB}"
@@ -73,15 +72,28 @@ if [ "$1" = "/gerrit-start.sh" ]; then
     [ -z "${DB_ENV_POSTGRES_PASSWORD}" ] || set_secure_config database.password "${DB_ENV_POSTGRES_PASSWORD}"
   fi
 
-  #Section database
   if [ "${DATABASE_TYPE}" = 'mysql' ]; then
-    set_gerrit_config database.type "${DATABASE_TYPE}"
     [ -z "${DB_PORT_3306_TCP_ADDR}" ] || set_gerrit_config database.hostname "${DB_PORT_3306_TCP_ADDR}"
     [ -z "${DB_PORT_3306_TCP_PORT}" ] || set_gerrit_config database.port "${DB_PORT_3306_TCP_PORT}"
     [ -z "${DB_ENV_MYSQL_DB}" ]       || set_gerrit_config database.database "${DB_ENV_MYSQL_DB}"
     [ -z "${DB_ENV_MYSQL_USER}" ]     || set_gerrit_config database.username "${DB_ENV_MYSQL_USER}"
     [ -z "${DB_ENV_MYSQL_PASSWORD}" ] || set_secure_config database.password "${DB_ENV_MYSQL_PASSWORD}"
   fi
+
+  # docker --link is deprecated. All DB_* environment variables will be replaced by DATABASE_* below.
+  # All kinds of database.type are supported.
+  [ -z "${DATABASE_TYPE}" ]     || set_gerrit_config database.type     "${DATABASE_TYPE}"
+  [ -z "${DATABASE_HOSTNAME}" ] || set_gerrit_config database.hostname "${DATABASE_HOSTNAME}"
+  [ -z "${DATABASE_PORT}" ]     || set_gerrit_config database.port     "${DATABASE_PORT}"
+  [ -z "${DATABASE_DATABASE}" ] || set_gerrit_config database.database "${DATABASE_DATABASE}"
+  [ -z "${DATABASE_USERNAME}" ] || set_gerrit_config database.username "${DATABASE_USERNAME}"
+  [ -z "${DATABASE_PASSWORD}" ] || set_secure_config database.password "${DATABASE_PASSWORD}"
+  # Other unnecessary options
+  [ -z "${DATABASE_CONNECTION_POOL}" ] || set_secure_config database.connectionPool "${DATABASE_CONNECTION_POOL}"
+  [ -z "${DATABASE_POOL_LIMIT}" ]      || set_secure_config database.poolLimit "${DATABASE_POOL_LIMIT}"
+  [ -z "${DATABASE_POOL_MIN_IDLE}" ]   || set_secure_config database.poolMinIdle "${DATABASE_POOL_MIN_IDLE}"
+  [ -z "${DATABASE_POOL_MAX_IDLE}" ]   || set_secure_config database.poolMaxIdle "${DATABASE_POOL_MAX_IDLE}"
+  [ -z "${DATABASE_POOL_MAX_WAIT}" ]   || set_secure_config database.poolMaxWait "${DATABASE_POOL_MAX_WAIT}"
 
   #Section auth
   [ -z "${AUTH_TYPE}" ]                  || set_gerrit_config auth.type "${AUTH_TYPE}"
@@ -223,10 +235,12 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   set_gerrit_config gitweb.type "$GITWEB_TYPE"
 
   case "${DATABASE_TYPE}" in
-    postgresql) wait_for_database ${DB_PORT_5432_TCP_ADDR} ${DB_PORT_5432_TCP_PORT} ;;
-    mysql)      wait_for_database ${DB_PORT_3306_TCP_ADDR} ${DB_PORT_3306_TCP_PORT} ;;
+    postgresql) [ -z "${DB_PORT_5432_TCP_ADDR}" ]  || wait_for_database ${DB_PORT_5432_TCP_ADDR} ${DB_PORT_5432_TCP_PORT} ;;
+    mysql)      [ -z "${DB_PORT_3306_TCP_ADDR}" ]  || wait_for_database ${DB_PORT_3306_TCP_ADDR} ${DB_PORT_3306_TCP_PORT} ;;
     *)          ;;
   esac
+  # docker --link is deprecated. All DB_* environment variables will be replaced by DATABASE_* below.
+  [ ${#DATABASE_HOSTNAME} -gt 0 ] && [ ${#DATABASE_PORT} -gt 0 ] && wait_for_database ${DATABASE_HOSTNAME} ${DATABASE_PORT}
 
   echo "Upgrading gerrit..."
   gosu ${GERRIT_USER} java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -jar "${GERRIT_WAR}" init --batch -d "${GERRIT_SITE}" ${GERRIT_INIT_ARGS}

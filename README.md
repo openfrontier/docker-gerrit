@@ -1,6 +1,6 @@
 # Gerrit Docker image
 
- The Gerrit code review system with PostgreSQL and OpenLDAP integration supported.
+ The Gerrit code review system with external database and OpenLDAP integration.
  This image is based on the openjdk:jre-alpine or the openjdk:jre-slim which makes this image small and fast.
 
 ## Versions
@@ -74,9 +74,34 @@
   RUN chmod +x /docker-entrypoint-init.d/*.sh /docker-entrypoint-init.d/*.nohup
   ```
 
-## Run dockerized gerrit with dockerized PostgreSQL and OpenLDAP.
+## Run dockerized gerrit with external database and OpenLDAP.
+
+##### All attributes in [gerrit.config database section](https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#database) are supported.
 
 ##### All attributes in [gerrit.config ldap section](https://gerrit-review.googlesource.com/Documentation/config-gerrit.html#ldap) are supported.
+
+  ```shell
+    #Start gerrit docker to connect with an already existed postgres.
+    docker run \
+    --name gerrit \
+    -p 8080:8080 \
+    -p 29418:29418 \
+    -e WEBURL=http://your.site.domain:8080 \
+    -e DATABASE_TYPE=postgresql \
+    -e DATABASE_HOSTNAME=postgres.hostname \
+    -e DATABASE_PORT=5432 \
+    -e DATABASE_DATABASE=reviewdb \
+    -e DATABASE_USERNAME=gerrit2 \
+    -e DATABASE_PASSWORD=gerrit \
+    -e AUTH_TYPE=LDAP \
+    -e LDAP_SERVER=ldap://ldap.server.address \
+    -e LDAP_ACCOUNTBASE=<ldap-basedn> \
+    -d openfrontier/gerrit
+  ```
+
+## Run dockerized gerrit with dockerized PostgreSQL and OpenLDAP.
+
+#### Note: docker --link is deprecated and this way might be unsupported in the future release.
 
   ```shell
     # Start postgres docker
