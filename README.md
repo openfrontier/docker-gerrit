@@ -209,6 +209,17 @@
     -d openfrontier/gerrit
   ```
 
+## Restricting download schemes  
+
+  ```shell
+    docker run \
+    --name gerrit \
+    -p 8080:8080 \
+    -p 29418:29418 \
+    -e DOWNLOAD_SCHEMES=http ssh \
+    -d openfrontier/gerrit
+  ```
+
 ## Setup DEVELOPMENT_BECOME_ANY_ACCOUNT option
 
 **DO NOT USE.** Only for use in a development environment.
