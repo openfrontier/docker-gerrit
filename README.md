@@ -1,5 +1,9 @@
 # Gerrit Docker image
 
+[![Docker Stars](https://img.shields.io/docker/stars/openfrontier/gerrit.svg)](https://hub.docker.com/r/openfrontier/gerrit/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/openfrontier/gerrit.svg)](https://hub.docker.com/r/openfrontier/gerrit/)
+[![Docker Automated build](https://img.shields.io/docker/automated/openfrontier/gerrit.svg)](https://hub.docker.com/r/openfrontier/gerrit/)
+
  The Gerrit code review system with external database and OpenLDAP integration.
  This image is based on the openjdk:jre-alpine or the openjdk:jre-slim which makes this image small and fast.
 
