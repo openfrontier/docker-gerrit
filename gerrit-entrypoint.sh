@@ -69,7 +69,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   [ -z "${GITURL}" ]         || set_gerrit_config gerrit.canonicalGitUrl "${GITURL}"
   [ -z "${DOCURL}" ]         || set_gerrit_config gerrit.docUrl "${DOCURL}"
   [ -z "${GITHTTPURL}" ]     || set_gerrit_config gerrit.gitHttpUrl "${GITHTTPURL}"
-  if [ -z "${BUGURL}" ]; then   set_gerrit_config gerrit.reportBugUrl "${BUGURL}"
+  if [ -n "${BUGURL}" ]; then   set_gerrit_config gerrit.reportBugUrl "${BUGURL}"
     [ -z "${BUGTEXT}" ]      || set_gerrit_config gerrit.reportBugText "${BUGTEXT}"
   fi
   [ -z "${SERVER_ID}" ]      || set_gerrit_config gerrit.serverId "${SERVER_ID}"
