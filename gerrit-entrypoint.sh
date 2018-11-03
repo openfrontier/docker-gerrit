@@ -65,6 +65,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
 
   #Section gerrit
   [ -z "${UI}" ]             || set_gerrit_config gerrit.ui "${UI}"
+  [ -z "${GWT_UI}" ]         || set_gerrit_config gerrit.enableGwtUi "${GWT_UI}"
   [ -z "${WEBURL}" ]         || set_gerrit_config gerrit.canonicalWebUrl "${WEBURL}"
   [ -z "${GITURL}" ]         || set_gerrit_config gerrit.canonicalGitUrl "${GITURL}"
   [ -z "${DOCURL}" ]         || set_gerrit_config gerrit.docUrl "${DOCURL}"
