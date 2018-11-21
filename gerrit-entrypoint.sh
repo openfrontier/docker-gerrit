@@ -78,10 +78,8 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   [ -z "${IFRAME}" ]         || set_gerrit_config gerrit.canLoadInIFrame "${IFRAME}"
   [ -z "${CDN_PATH}" ]       || set_gerrit_config gerrit.cdnPath "${CDN_PATH}"
   [ -z "${BASE_PATH}" ]      || set_gerrit_config gerrit.basePath "${BASE_PATH}"
-  [ -z "${FAVICON_PATH}" ]   || set_gerrit_config gerrit.faviconPath "${FAVICON_PATH}"
   [ -z "${ALL_USERS}" ]      || set_gerrit_config gerrit.allUsers "${ALL_USERS}"
   [ -z "${ALL_PROJECTS}" ]   || set_gerrit_config gerrit.allProjects "${ALL_PROJECTS}"
-  [ -z "${INSTANCE_NAME}" ]  || set_gerrit_config gerrit.instanceName "${INSTANCE_NAME}"
   [ -z "${INSTALL_MODULE}" ] || set_gerrit_config gerrit.installModule "${INSTALL_MODULE}"
 
   [ -z "${SECURE_STORE_CLASS}" ]         || set_gerrit_config gerrit.secureStoreClass "${SECURE_STORE_CLASS}"
