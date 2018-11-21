@@ -64,8 +64,29 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   fi
 
   #Section gerrit
-  [ -z "${WEBURL}" ] || set_gerrit_config gerrit.canonicalWebUrl "${WEBURL}"
-  [ -z "${GITHTTPURL}" ] || set_gerrit_config gerrit.gitHttpUrl "${GITHTTPURL}"
+  [ -z "${UI}" ]             || set_gerrit_config gerrit.ui "${UI}"
+  [ -z "${GWT_UI}" ]         || set_gerrit_config gerrit.enableGwtUi "${GWT_UI}"
+  [ -z "${WEBURL}" ]         || set_gerrit_config gerrit.canonicalWebUrl "${WEBURL}"
+  [ -z "${GITURL}" ]         || set_gerrit_config gerrit.canonicalGitUrl "${GITURL}"
+  [ -z "${DOCURL}" ]         || set_gerrit_config gerrit.docUrl "${DOCURL}"
+  [ -z "${GITHTTPURL}" ]     || set_gerrit_config gerrit.gitHttpUrl "${GITHTTPURL}"
+  if [ -n "${BUGURL}" ]; then   set_gerrit_config gerrit.reportBugUrl "${BUGURL}"
+    [ -z "${BUGTEXT}" ]      || set_gerrit_config gerrit.reportBugText "${BUGTEXT}"
+  fi
+  [ -z "${SERVER_ID}" ]      || set_gerrit_config gerrit.serverId "${SERVER_ID}"
+  [ -z "${EDIT_GPG}" ]       || set_gerrit_config gerrit.editGpgKeys "${EDIT_GPG}"
+  [ -z "${IFRAME}" ]         || set_gerrit_config gerrit.canLoadInIFrame "${IFRAME}"
+  [ -z "${CDN_PATH}" ]       || set_gerrit_config gerrit.cdnPath "${CDN_PATH}"
+  [ -z "${BASE_PATH}" ]      || set_gerrit_config gerrit.basePath "${BASE_PATH}"
+  [ -z "${FAVICON_PATH}" ]   || set_gerrit_config gerrit.faviconPath "${FAVICON_PATH}"
+  [ -z "${ALL_USERS}" ]      || set_gerrit_config gerrit.allUsers "${ALL_USERS}"
+  [ -z "${ALL_PROJECTS}" ]   || set_gerrit_config gerrit.allProjects "${ALL_PROJECTS}"
+  [ -z "${INSTANCE_NAME}" ]  || set_gerrit_config gerrit.instanceName "${INSTANCE_NAME}"
+  [ -z "${INSTALL_MODULE}" ] || set_gerrit_config gerrit.installModule "${INSTALL_MODULE}"
+
+  [ -z "${SECURE_STORE_CLASS}" ]         || set_gerrit_config gerrit.secureStoreClass "${SECURE_STORE_CLASS}"
+  [ -z "${INSTALL_COMMIT_MSG_HOOK}" ]    || set_gerrit_config gerrit.installCommitMsgHookCommand "${INSTALL_COMMIT_MSG_HOOK}"
+  [ -z "${DISABLE_REVERSE_DNS_LOOKUP}" ] || set_gerrit_config gerrit.disableReverseDnsLookup "$DISABLE_REVERSE_DNS_LOOKUP}"
 
   #Section sshd
   [ -z "${LISTEN_ADDR}" ]             || set_gerrit_config sshd.listenAddress "${LISTEN_ADDR}"
@@ -169,7 +190,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
 
   #Section OAUTH general
   if [ "${AUTH_TYPE}" = 'OAUTH' ]  ; then
-    su-exec ${GERRIT_USER} cp -f ${GERRIT_HOME}/gerrit-oauth-provider.jar ${GERRIT_SITE}/plugins/gerrit-oauth-provider.jar
+    su-exec ${GERRIT_USER} cp -f ${GERRIT_HOME}/oauth.jar ${GERRIT_SITE}/plugins/oauth.jar
     [ -z "${OAUTH_ALLOW_EDIT_FULL_NAME}" ]     || set_gerrit_config oauth.allowEditFullName "${OAUTH_ALLOW_EDIT_FULL_NAME}"
     [ -z "${OAUTH_ALLOW_REGISTER_NEW_EMAIL}" ] || set_gerrit_config oauth.allowRegisterNewEmail "${OAUTH_ALLOW_REGISTER_NEW_EMAIL}"
 
