@@ -17,8 +17,8 @@
 
 #### Debian base
 
- * openfrontier/gerrit:2.15.x-slim -> 2.15.5
- * openfrontier/gerrit:2.14.x-slim -> 2.14.15
+ * openfrontier/gerrit:2.15.x-slim -> 2.15.7
+ * openfrontier/gerrit:2.14.x-slim -> 2.14.17
 
 ## Container Quickstart
 
