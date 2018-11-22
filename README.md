@@ -24,8 +24,8 @@
 
 #### Debian base
 
- * openfrontier/gerrit:2.15.x-slim -> 2.15.5
- * openfrontier/gerrit:2.14.x-slim -> 2.14.15
+ * openfrontier/gerrit:2.15.x-slim -> 2.15.7
+ * openfrontier/gerrit:2.14.x-slim -> 2.14.17
 
 ## Migrate from ReviewDB to NoteDB
   Since Gerrit 2.15, [NoteDB](https://gerrit-review.googlesource.com/Documentation/note-db.html) is recommended to store account data, group data and change data.
