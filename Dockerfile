@@ -25,7 +25,6 @@ RUN curl -fSsL https://gerrit-releases.storage.googleapis.com/gerrit-${GERRIT_VE
 
 #Download Plugins
 ENV PLUGIN_VERSION=bazel-stable-2.16
-ENV PLUGIN_VERSION_15=bazel-stable-2.15
 ENV GERRITFORGE_URL=https://gerrit-ci.gerritforge.com
 ENV GERRITFORGE_ARTIFACT_DIR=lastSuccessfulBuild/artifact/bazel-genfiles/plugins
 
@@ -54,9 +53,9 @@ RUN curl -fSsL \
     -o ${GERRIT_HOME}/gerrit-oauth-provider.jar
 
 #importer
-RUN curl -fSsL \
-    ${GERRITFORGE_URL}/job/plugin-importer-${PLUGIN_VERSION_15}/${GERRITFORGE_ARTIFACT_DIR}/importer/importer.jar \
-    -o ${GERRIT_HOME}/importer.jar
+#RUN curl -fSsL \
+#    ${GERRITFORGE_URL}/job/plugin-importer-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/importer/importer.jar \
+#    -o ${GERRIT_HOME}/importer.jar
 
 # Ensure the entrypoint scripts are in a fixed location
 COPY gerrit-entrypoint.sh /
