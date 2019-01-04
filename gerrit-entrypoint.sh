@@ -219,7 +219,7 @@ done
 
   #Section OAUTH general
   if [ "${AUTH_TYPE}" = 'OAUTH' ]  ; then
-    su-exec ${GERRIT_USER} cp -f ${GERRIT_HOME}/oauth.jar ${GERRIT_SITE}/plugins/oauth.jar
+    su-exec ${GERRIT_USER} cp -f ${GERRIT_HOME}/gerrit-oauth-provider.jar ${GERRIT_SITE}/plugins/gerrit-oauth-provider.jar
     [ -z "${OAUTH_ALLOW_EDIT_FULL_NAME}" ]     || set_gerrit_config oauth.allowEditFullName "${OAUTH_ALLOW_EDIT_FULL_NAME}"
     [ -z "${OAUTH_ALLOW_REGISTER_NEW_EMAIL}" ] || set_gerrit_config oauth.allowRegisterNewEmail "${OAUTH_ALLOW_REGISTER_NEW_EMAIL}"
 

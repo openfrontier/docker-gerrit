@@ -44,10 +44,12 @@ RUN curl -fSsL \
     ${GERRITFORGE_URL}/job/plugin-gitiles-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/gitiles/gitiles.jar \
     -o ${GERRIT_HOME}/gitiles.jar
 
-#oauth2
+#oauth2 plugin
+ENV GERRIT_OAUTH_VERSION 2.14.6.2
+
 RUN curl -fSsL \
-    ${GERRITFORGE_URL}/job/plugin-oauth-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/oauth/oauth.jar \
-    -o ${GERRIT_HOME}/oauth.jar
+    https://github.com/davido/gerrit-oauth-provider/releases/download/v${GERRIT_OAUTH_VERSION}/gerrit-oauth-provider.jar \
+    -o ${GERRIT_HOME}/gerrit-oauth-provider.jar
 
 #importer
 RUN curl -fSsL \
