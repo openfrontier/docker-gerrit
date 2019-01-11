@@ -234,6 +234,29 @@
     -e OAUTH_BITBUCKET_FIX_LEGACY_USER_ID=true \
     -d openfrontier/gerrit
   ```
+## Setup Replication with one BitBucket remote
+
+  ```shell
+    docker run \
+    --name gerrit \
+    -p 8080:8080 \
+    -p 29418:29418 \
+    -e WEBURL=http://my-gerrit.example.com \
+    -e DOWNLOAD_SCHEMES="http ssh" \
+    -e GERRIT_INIT_ARGS="--install-plugin=replication" \
+    -e REPLICATION_REMOTES=bitbucket \
+    -e BITBUCKET_REMOTE=https://${BB_USER}@bitbucket.org/${BB_ORG}/${name}.git \
+    -e BITBUCKET_PASSWORD=${BITBUCKET_PASSWORD} \
+    -e BITBUCKET_MIRROR=true \
+    -e BITBUCKET_PROJECTS=example \
+    -e BITBUCKET_REPLICATE_ON_STARTUP=true \
+    -e GITHUB_REMOTE=https://${GH_USER}@github.com/${GH_ORG}/${name}.git \
+    -e GITHUB_PASSWORD=${GITHUB_PASSWORD} \
+    -e GITHUB_MIRROR=true \
+    -e GITHUB_PROJECTS=example \
+    -e GITHUB_REPLICATE_ON_STARTUP=true \
+    -d openfrontier/gerrit
+  ```
 
 ## Using gitiles instead of gitweb
 
