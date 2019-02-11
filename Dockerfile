@@ -40,9 +40,8 @@ RUN curl -fSsL \
     -o ${GERRIT_HOME}/events-log.jar
 
 #gitiles
-ENv GITILES_PLUGIN_VERSION=bazel-master-stable-2.16
 RUN curl -fSsL \
-    ${GERRITFORGE_URL}/job/plugin-gitiles-${GITILES_PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/gitiles/gitiles.jar \
+    ${GERRITFORGE_URL}/job/plugin-gitiles-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/gitiles/gitiles.jar \
     -o ${GERRIT_HOME}/gitiles.jar
 
 #oauth2
