@@ -117,6 +117,9 @@ done
   [ -z "${INSTALL_COMMIT_MSG_HOOK}" ]    || set_gerrit_config gerrit.installCommitMsgHookCommand "${INSTALL_COMMIT_MSG_HOOK}"
   [ -z "${DISABLE_REVERSE_DNS_LOOKUP}" ] || set_gerrit_config gerrit.disableReverseDnsLookup "$DISABLE_REVERSE_DNS_LOOKUP}"
 
+  [ -z "${PRIMARY_WEBLINK_NAME}" ]     || set_gerrit_config gerrit.primaryWeblinkName "${PRIMARY_WEBLINK_NAME}"
+  [ -z "${LIST_PROJECTS_FROM_INDEX}" ] || set_gerrit_config gerrit.listProjectsFromIndex "${LIST_PROJECTS_FROM_INDEX}"
+
   #Section sshd
   [ -z "${LISTEN_ADDR}" ]             || set_gerrit_config sshd.listenAddress "${LISTEN_ADDR}"
   [ -z "${SSHD_ADVERTISE_ADDR}" ]     || set_gerrit_config sshd.advertisedAddress "${SSHD_ADVERTISE_ADDR}"
