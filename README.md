@@ -14,8 +14,8 @@
 
 #### Alpine base
 
- * openfrontier/gerrit:latest -> 2.16.5
- * openfrontier/gerrit:2.15.x -> 2.15.11
+ * openfrontier/gerrit:latest -> 2.16.7
+ * openfrontier/gerrit:2.15.x -> 2.15.12
  * openfrontier/gerrit:2.14.x -> 2.14.18
  * openfrontier/gerrit:2.13.x -> 2.13.11
  * openfrontier/gerrit:2.12.x -> 2.12.7
@@ -24,7 +24,7 @@
 
 #### Debian base
 
- * openfrontier/gerrit:2.15.x-slim -> 2.15.11
+ * openfrontier/gerrit:2.15.x-slim -> 2.15.12
  * openfrontier/gerrit:2.14.x-slim -> 2.14.18
 
 ## Migrate from ReviewDB to NoteDB
@@ -77,15 +77,16 @@
 
     docker run -d --volumes-from gerrit_volume -p 8080:8080 -p 29418:29418 openfrontier/gerrit
 
-## Use local directory as the gerrit site storage.
+## Use a docker named volume as the gerrit site storage.
+  **DO NOT** use host volumes in particular directories under the home directory like `~/gerrit` as a gerrit volume!!! Use [named volume](https://success.docker.com/article/different-types-of-volumes) instead!!!
 
-  1. Create a site directory for the gerrit site.
+  1. Create a docker volume for the gerrit site.
 
-    mkdir ~/gerrit_volume
+    docker volume create gerrit_volume
 
   2. Initialize and start gerrit using the local directory created above.
 
-    docker run -d -v ~/gerrit_volume:/var/gerrit/review_site -p 8080:8080 -p 29418:29418 openfrontier/gerrit
+    docker run -d -v gerrit_volume:/var/gerrit/review_site -p 8080:8080 -p 29418:29418 openfrontier/gerrit
 
 ## Install plugins on start up.
 
