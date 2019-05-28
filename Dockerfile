@@ -6,9 +6,9 @@ MAINTAINER zsx <thinkernel@gmail.com>
 ENV GERRIT_HOME /var/gerrit
 ENV GERRIT_SITE ${GERRIT_HOME}/review_site
 ENV GERRIT_WAR ${GERRIT_HOME}/gerrit.war
-ENV GERRIT_VERSION 2.16.8
+ENV GERRIT_VERSION 3.0.0
 ENV GERRIT_USER gerrit2
-ENV GERRIT_INIT_ARGS ""
+ENV GERRIT_INIT_ARGS "--install-plugin=delete-project --install-plugin=gitiles --install-plugin=plugin-manager"
 
 # Add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 RUN adduser -D -h "${GERRIT_HOME}" -g "Gerrit User" -s /sbin/nologin "${GERRIT_USER}"
@@ -28,28 +28,21 @@ ENV PLUGIN_VERSION=bazel-stable-2.16
 ENV GERRITFORGE_URL=https://gerrit-ci.gerritforge.com
 ENV GERRITFORGE_ARTIFACT_DIR=lastSuccessfulBuild/artifact/bazel-genfiles/plugins
 
-#delete-project
-RUN curl -fSsL \
-    ${GERRITFORGE_URL}/job/plugin-delete-project-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/delete-project/delete-project.jar \
-    -o ${GERRIT_HOME}/delete-project.jar
-
 #events-log
 #This plugin is required by gerrit-trigger plugin of Jenkins.
-RUN curl -fSsL \
-    ${GERRITFORGE_URL}/job/plugin-events-log-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/events-log/events-log.jar \
-    -o ${GERRIT_HOME}/events-log.jar
-
-#gitiles
-RUN curl -fSsL \
-    ${GERRITFORGE_URL}/job/plugin-gitiles-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/gitiles/gitiles.jar \
-    -o ${GERRIT_HOME}/gitiles.jar
+# Waiting verson 3.0
+#RUN curl -fSsL \
+#    ${GERRITFORGE_URL}/job/plugin-events-log-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/events-log/events-log.jar \
+#    -o ${GERRIT_HOME}/events-log.jar
 
 #oauth2
-RUN curl -fSsL \
-    ${GERRITFORGE_URL}/job/plugin-oauth-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/oauth/oauth.jar \
-    -o ${GERRIT_HOME}/oauth.jar
+# Waiting verson 3.0
+#RUN curl -fSsL \
+#    ${GERRITFORGE_URL}/job/plugin-oauth-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/oauth/oauth.jar \
+#    -o ${GERRIT_HOME}/oauth.jar
 
 #importer
+# Waiting verson 3.0
 #RUN curl -fSsL \
 #    ${GERRITFORGE_URL}/job/plugin-importer-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/importer/importer.jar \
 #    -o ${GERRIT_HOME}/importer.jar
