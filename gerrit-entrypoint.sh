@@ -43,8 +43,8 @@ if [ "$1" = "/gerrit-start.sh" ]; then
   fi
 
   # Install external plugins
-  su-exec ${GERRIT_USER} cp -f ${GERRIT_HOME}/delete-project.jar ${GERRIT_SITE}/plugins/delete-project.jar
-  su-exec ${GERRIT_USER} cp -f ${GERRIT_HOME}/events-log.jar ${GERRIT_SITE}/plugins/events-log.jar
+  # The events-log and importer plugins are not ready for 3.0.0 yet.
+  #su-exec ${GERRIT_USER} cp -f ${GERRIT_HOME}/events-log.jar ${GERRIT_SITE}/plugins/events-log.jar
   #su-exec ${GERRIT_USER} cp -f ${GERRIT_HOME}/importer.jar ${GERRIT_SITE}/plugins/importer.jar
 
   # Provide a way to customise this image
@@ -301,13 +301,13 @@ done
 
   #Section gitweb
   case "$GITWEB_TYPE" in
-     "gitiles") su-exec $GERRIT_USER cp -f $GERRIT_HOME/gitiles.jar $GERRIT_SITE/plugins/gitiles.jar ;;
      "") # Gitweb by default
-        set_gerrit_config gitweb.cgi "/usr/share/gitweb/gitweb.cgi"
+        export GITWEB_CGI="/usr/share/gitweb/gitweb.cgi"
         export GITWEB_TYPE=gitweb
      ;;
   esac
-  set_gerrit_config gitweb.type "$GITWEB_TYPE"
+  [ -z "${GITWEB_TYPE}" ] || set_gerrit_config gitweb.type "${GITWEB_TYPE}"
+  [ -z "${GITWEB_CGI}" ]  || set_gerrit_config gitweb.cgi  "${GITWEB_CGI}"
 
   case "${DATABASE_TYPE}" in
     postgresql) [ -z "${DB_PORT_5432_TCP_ADDR}" ]  || wait_for_database ${DB_PORT_5432_TCP_ADDR} ${DB_PORT_5432_TCP_PORT} ;;
