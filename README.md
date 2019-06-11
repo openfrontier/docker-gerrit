@@ -236,7 +236,7 @@
     -e OAUTH_BITBUCKET_FIX_LEGACY_USER_ID=true \
     -d openfrontier/gerrit
   ```
-## Setup Replication with one BitBucket remote
+## Setup Replication to multiple remotes 
 
   ```shell
     docker run \
@@ -246,17 +246,24 @@
     -e WEBURL=http://my-gerrit.example.com \
     -e DOWNLOAD_SCHEMES="http ssh" \
     -e GERRIT_INIT_ARGS="--install-plugin=replication" \
-    -e REPLICATION_REMOTES=bitbucket \
-    -e BITBUCKET_REMOTE=https://${BB_USER}@bitbucket.org/${BB_ORG}/${name}.git \
-    -e BITBUCKET_PASSWORD=${BITBUCKET_PASSWORD} \
+    -e REPLICATION_REMOTES="bitbucket github" \
+    -e REPLICATE_ON_STARTUP=true \
+    -e REPLICATION_MAX_RETRIES=3 \
+    -e BITBUCKET_URL=https://bitbucket.org/${BB_ORG}/${name}.git \
+    -e BITBUCKET_PROJECTS="demo* prod*" \
+    -e BITBUCKET_USERNAME=${BB_USER} \
+    -e BITBUCKET_PASSWORD=${BB_PASSWORD} \
     -e BITBUCKET_MIRROR=true \
-    -e BITBUCKET_PROJECTS=example \
-    -e BITBUCKET_REPLICATE_ON_STARTUP=true \
-    -e GITHUB_REMOTE=https://${GH_USER}@github.com/${GH_ORG}/${name}.git \
-    -e GITHUB_PASSWORD=${GITHUB_PASSWORD} \
-    -e GITHUB_MIRROR=true \
-    -e GITHUB_PROJECTS=example \
-    -e GITHUB_REPLICATE_ON_STARTUP=true \
+    -e BITBUCKET_TIMEOUT=60 \
+    -e BITBUCKET_THREADS=2 \
+    -e BITBUCKET_RESCHEDULE_DELAY=15 \
+    -e BITBUCKET_REPLICATION_DELAY=15 \
+    -e BITBUCKET_REPLICATION_RETRY=1 \
+    -e BITBUCKET_REPLICATION_MAX_RETRIES=5 \
+    -e BITBUCKET_REPLICATE_PERMISSIONS=false \
+    -e BITBUCKET_CREATE_MISSING_REPOSITORIES=false \
+    -e GITHUB_URL=https://${GH_USER}@github.com/${GH_ORG}/${name}.git \
+    -e GITHUB_PASSWORD=${GH_PASSWORD} \
     -d openfrontier/gerrit
   ```
 
