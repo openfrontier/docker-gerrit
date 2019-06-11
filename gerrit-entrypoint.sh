@@ -58,30 +58,61 @@ if [ "$1" = "/gerrit-start.sh" ]; then
     echo
   done
 
-#Replication config
-if [ -n "${REPLICATION_REMOTES}" ]; then
-  set_replication_config gerrit.autoReload "true"
-fi
+  #Replication config
+  if [ -n "${REPLICATION_REMOTES}" ]; then
+    set_replication_config gerrit.autoReload "true"
+    [ -z "${REPLICATE_ON_STARTUP}" ]    || set_replication_config gerrit.replicateOnStartup "${REPLICATE_ON_STARTUP}"
+    [ -z "${REPLICATION_MAX_RETRIES}" ] || set_replication_config replication.maxRetries "${REPLICATION_MAX_RETRIES}"
 
-for r in $REPLICATION_REMOTES; do
-  REMOTE=`eval $(echo echo \\$$(echo "${r}_REMOTE"| awk '{print toupper($0)}'))`
-  PASSWD=`eval $(echo echo \\$$(echo "${r}_PASSWORD"| awk '{print toupper($0)}'))`
-  MIRROR=`eval $(echo echo \\$$(echo "${r}_MIRROR"| awk '{print toupper($0)}'))`
-  PROJECTS=`eval $(echo echo \\$$(echo "${r}_PROJECTS"| awk '{print toupper($0)}'))`
-  REPLICATE_ON_STARTUP=`eval $(echo echo \\$$(echo "${r}_REPLICATE_ON_STARTUP"| awk '{print toupper($0)}'))`
+    for r in ${REPLICATION_REMOTES}; do
+      URL=`eval      $(echo echo \\$$(echo "${r}_URL"     | awk '{print toupper($0)}'))`
+      MIRROR=`eval   $(echo echo \\$$(echo "${r}_MIRROR"  | awk '{print toupper($0)}'))`
+      PROJECTS=`eval $(echo echo \\$$(echo "${r}_PROJECTS"| awk '{print toupper($0)}'))`
+      TIMEOUT=`eval  $(echo echo \\$$(echo "${r}_TIMEOUT" | awk '{print toupper($0)}'))`
+      THREADS=`eval  $(echo echo \\$$(echo "${r}_THREADS" | awk '{print toupper($0)}'))`
 
-  [ -z "${PASSWD}" ]               || set_secure_config remote.$r.password "${PASSWD}"
-  [ -z "${REPLICATE_ON_STARTUP}" ] || set_replication_config gerrit.replicateOnStartup "${REPLICATE_ON_STARTUP}"
-  [ -z "${REMOTE}" ]               || set_replication_config remote.$r.url "${REMOTE}"
-  [ -z "${MIRROR}" ]               || set_replication_config remote.$r.mirror "${MIRROR}"
-  [ -z "${PROJECTS}" ]             || set_replication_config remote.$r.projects "${PROJECTS}"
+      RESCHEDULE_DELAY=`eval $(echo echo \\$$(echo "${r}_RESCHEDUL_DELAY" | awk '{print toupper($0)}'))`
 
-cat <<EOF >> $GERRIT_SITE/etc/replication.config
-[remote "$r"]
-	push = +refs/tags/*:refs/tags/*
-	push = +refs/heads/*:refs/heads/*
-EOF
-done
+      REPLICATION_DELAY=`eval       $(echo echo \\$$(echo "${r}_REPLICATION_DELAY"       | awk '{print toupper($0)}'))`
+      REPLICATION_RETRY=`eval       $(echo echo \\$$(echo "${r}_REPLICATION_RETRY"       | awk '{print toupper($0)}'))`
+      REPLICATION_MAX_RETRIES=`eval $(echo echo \\$$(echo "${r}_REPLICATION_MAX_RETRIES" | awk '{print toupper($0)}'))`
+
+      REPLICATE_PERMISSIONS=`eval $(echo echo \\$$(echo "${r}_REPLICATE_PERMISSIONS" | awk '{print toupper($0)}'))`
+
+      CREATE_MISSING_REPOSITORIES=`eval $(echo echo \\$$(echo "${r}_CREATE_MISSING_REPOSITORIES" | awk '{print toupper($0)}'))`
+
+      USERNAME=`eval $(echo echo \\$$(echo "${r}_USERNAME"| awk '{print toupper($0)}'))`
+      PASSWORD=`eval $(echo echo \\$$(echo "${r}_PASSWORD"| awk '{print toupper($0)}'))`
+
+      [ -z "${URL}" ]           || set_replication_config remote.${r}.url "${URL}"
+      [ -z "${MIRROR}" ]           || set_replication_config remote.${r}.mirror "${MIRROR}"
+      [ -z "${TIMEOUT}" ]          || set_replication_config remote.${r}.timeout "${TIMEOUT}"
+      [ -z "${THREADS}" ]          || set_replication_config remote.${r}.threads "${THREADS}"
+      [ -z "${RESCHEDULE_DELAY}" ] || set_replication_config remote.${r}.rescheduleDelay "${RESCHEDULE_DELAY}"
+
+      [ -z "${REPLICATION_DELAY}" ]       || set_replication_config remote.${r}.replicationDelay "${REPLICATION_DELAY}"
+      [ -z "${REPLICATION_RETRY}" ]       || set_replication_config remote.${r}.replicationRetry "${REPLICATION_RETRY}"
+      [ -z "${REPLICATION_MAX_RETRIES}" ] || set_replication_config remote.${r}.replicationMaxRetries "${REPLICATION_MAX_RETRIES}"
+
+      [ -z "${REPLICATE_PERMISSIONS}" ] || set_replication_config remote.${r}.replicatePermissions "${REPLICATE_PERMISSIONS}"
+
+      [ -z "${CREATE_MISSING_REPOSITORIES}" ] || set_replication_config remote.${r}.createMissingRepositories "${CREATE_MISSING_REPOSITORIES}"
+
+      [ -z "${USERNAME}" ] || set_secure_config remote.${r}.username "${USERNAME}"
+      [ -z "${PASSWORD}" ] || set_secure_config remote.${r}.password "${PASSWORD}"
+
+      if ! $(git config -f replication.config --get-all remote.${r}.projects > /dev/null); then
+        for p in ${PROJECTS}; do
+          set_replication_config --add remote.${r}.projects "${p}"
+        done
+      fi
+
+      if ! $(git config -f replication.config --get-all remote.${r}.push > /dev/null); then
+        set_replication_config --add remote.${r}.push "+refs/heads/*:refs/heads/*"
+        set_replication_config --add remote.${r}.push "+refs/tags/*:refs/tags/*"
+      fi
+    done
+  fi
 
   #Customize gerrit.config
   #Section download
