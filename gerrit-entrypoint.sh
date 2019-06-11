@@ -58,30 +58,30 @@ if [ "$1" = "/gerrit-start.sh" ]; then
     echo
   done
 
-#Replication config
-if [ -n "${REPLICATION_REMOTES}" ]; then
-  set_replication_config gerrit.autoReload "true"
-fi
+  #Replication config
+  if [ -n "${REPLICATION_REMOTES}" ]; then
+    set_replication_config gerrit.autoReload "true"
+  fi
 
-for r in $REPLICATION_REMOTES; do
-  REMOTE=`eval $(echo echo \\$$(echo "${r}_REMOTE"| awk '{print toupper($0)}'))`
-  PASSWD=`eval $(echo echo \\$$(echo "${r}_PASSWORD"| awk '{print toupper($0)}'))`
-  MIRROR=`eval $(echo echo \\$$(echo "${r}_MIRROR"| awk '{print toupper($0)}'))`
-  PROJECTS=`eval $(echo echo \\$$(echo "${r}_PROJECTS"| awk '{print toupper($0)}'))`
-  REPLICATE_ON_STARTUP=`eval $(echo echo \\$$(echo "${r}_REPLICATE_ON_STARTUP"| awk '{print toupper($0)}'))`
+  for r in $REPLICATION_REMOTES; do
+    REMOTE=`eval $(echo echo \\$$(echo "${r}_REMOTE"| awk '{print toupper($0)}'))`
+    PASSWD=`eval $(echo echo \\$$(echo "${r}_PASSWORD"| awk '{print toupper($0)}'))`
+    MIRROR=`eval $(echo echo \\$$(echo "${r}_MIRROR"| awk '{print toupper($0)}'))`
+    PROJECTS=`eval $(echo echo \\$$(echo "${r}_PROJECTS"| awk '{print toupper($0)}'))`
+    REPLICATE_ON_STARTUP=`eval $(echo echo \\$$(echo "${r}_REPLICATE_ON_STARTUP"| awk '{print toupper($0)}'))`
 
-  [ -z "${PASSWD}" ]               || set_secure_config remote.$r.password "${PASSWD}"
-  [ -z "${REPLICATE_ON_STARTUP}" ] || set_replication_config gerrit.replicateOnStartup "${REPLICATE_ON_STARTUP}"
-  [ -z "${REMOTE}" ]               || set_replication_config remote.$r.url "${REMOTE}"
-  [ -z "${MIRROR}" ]               || set_replication_config remote.$r.mirror "${MIRROR}"
-  [ -z "${PROJECTS}" ]             || set_replication_config remote.$r.projects "${PROJECTS}"
+    [ -z "${PASSWD}" ]               || set_secure_config remote.$r.password "${PASSWD}"
+    [ -z "${REPLICATE_ON_STARTUP}" ] || set_replication_config gerrit.replicateOnStartup "${REPLICATE_ON_STARTUP}"
+    [ -z "${REMOTE}" ]               || set_replication_config remote.$r.url "${REMOTE}"
+    [ -z "${MIRROR}" ]               || set_replication_config remote.$r.mirror "${MIRROR}"
+    [ -z "${PROJECTS}" ]             || set_replication_config remote.$r.projects "${PROJECTS}"
 
-cat <<EOF >> $GERRIT_SITE/etc/replication.config
+  cat <<EOF >> $GERRIT_SITE/etc/replication.config
 [remote "$r"]
 	push = +refs/tags/*:refs/tags/*
 	push = +refs/heads/*:refs/heads/*
 EOF
-done
+  done
 
   #Customize gerrit.config
   #Section download
