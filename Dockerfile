@@ -62,7 +62,7 @@ RUN wget -O "$GERRIT_WAR" https://gerrit-releases.storage.googleapis.com/gerrit-
 #Download Plugins
 ENV PLUGIN_VERSION=bazel-stable-2.15
 ENV GERRITFORGE_URL=https://gerrit-ci.gerritforge.com
-ENV GERRITFORGE_ARTIFACT_DIR=lastSuccessfulBuild/artifact/bazel-genfiles/plugins
+ENV GERRITFORGE_ARTIFACT_DIR=lastSuccessfulBuild/artifact/bazel-bin/plugins
 
 #delete-project
 RUN wget -O "${GERRIT_HOME}/delete-project.jar" \
