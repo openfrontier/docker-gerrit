@@ -101,13 +101,13 @@ if [ "$1" = "/gerrit-start.sh" ]; then
       [ -z "${USERNAME}" ] || set_secure_config remote.${r}.username "${USERNAME}"
       [ -z "${PASSWORD}" ] || set_secure_config remote.${r}.password "${PASSWORD}"
 
-      if ! $(git config -f replication.config --get-all remote.${r}.projects > /dev/null); then
+      if ! $(git config -f "${GERRIT_SITE}/etc/replication.config" --get-all remote.${r}.projects > /dev/null); then
         for p in ${PROJECTS}; do
           set_replication_config --add remote.${r}.projects "${p}"
         done
       fi
 
-      if ! $(git config -f replication.config --get-all remote.${r}.push > /dev/null); then
+      if ! $(git config -f "${GERRIT_SITE}/etc/replication.config" --get-all remote.${r}.push > /dev/null); then
         set_replication_config --add remote.${r}.push "+refs/heads/*:refs/heads/*"
         set_replication_config --add remote.${r}.push "+refs/tags/*:refs/tags/*"
       fi
