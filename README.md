@@ -14,9 +14,9 @@
 
 #### Alpine base
 
- * openfrontier/gerrit:latest -> 3.0.2
- * openfrontier/gerrit:2.16.x -> 2.16.12
- * openfrontier/gerrit:2.15.x -> 2.15.17
+ * openfrontier/gerrit:latest -> 3.0.4
+ * openfrontier/gerrit:2.16.x -> 2.16.13
+ * openfrontier/gerrit:2.15.x -> 2.15.18
  * openfrontier/gerrit:2.14.x -> 2.14.20
  * openfrontier/gerrit:2.13.x -> 2.13.14
  * openfrontier/gerrit:2.12.x -> 2.12.7
@@ -25,7 +25,7 @@
 
 #### Debian base
 
- * openfrontier/gerrit:2.15.x-slim -> 2.15.13
+ * openfrontier/gerrit:2.15.x-slim -> 2.15.18
  * openfrontier/gerrit:2.14.x-slim -> 2.14.20
 
 ## Migrate from ReviewDB to NoteDB
