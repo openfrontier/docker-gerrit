@@ -14,11 +14,11 @@
 
 #### Alpine base
 
- * openfrontier/gerrit:2.15.x -> 2.15.17
+ * openfrontier/gerrit:2.15.x -> 2.15.18
 
 #### Debian base
 
- * openfrontier/gerrit:2.15.x-slim -> 2.15.17
+ * openfrontier/gerrit:2.15.x-slim -> 2.15.18
 
 ## Migrate from ReviewDB to NoteDB
   Since Gerrit 2.16, [NoteDB](https://gerrit-review.googlesource.com/Documentation/note-db.html) is required to store accounts and groups data.
