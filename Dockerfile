@@ -36,7 +36,7 @@ RUN curl -fSsL \
 
 #oauth2
 RUN curl -fSsL \
-    ${GERRITFORGE_URL}/job/plugin-oauth-bazel-stable-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/oauth/oauth.jar \
+    ${GERRITFORGE_URL}/job/plugin-oauth-bazel-master-stable-${PLUGIN_VERSION}/${GERRITFORGE_ARTIFACT_DIR}/oauth/oauth.jar \
     -o ${GERRIT_HOME}/oauth.jar
 
 #importer
