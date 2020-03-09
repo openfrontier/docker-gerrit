@@ -16,7 +16,7 @@
 
  * openfrontier/gerrit:latest -> 3.1.3
  * openfrontier/gerrit:3.0.x  -> 3.0.7
- * openfrontier/gerrit:2.16.x -> 2.16.15
+ * openfrontier/gerrit:2.16.x -> 2.16.16
  * openfrontier/gerrit:2.15.x -> 2.15.18
  * openfrontier/gerrit:2.14.x -> 2.14.20
  * openfrontier/gerrit:2.13.x -> 2.13.14
