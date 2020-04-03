@@ -14,7 +14,7 @@
 
 #### Alpine base
 
- * openfrontier/gerrit:2.16.x -> 2.16.16
+ * openfrontier/gerrit:2.16.x -> 2.16.17
 
 #### Debian base
 
