@@ -14,7 +14,8 @@
 
 #### Alpine base
 
- * openfrontier/gerrit:latest -> 3.1.8
+ * openfrontier/gerrit:latest -> 3.2.1
+ * openfrontier/gerrit:3.1.x -> 3.1.8
  * openfrontier/gerrit:3.0.x  -> 3.0.12
  * openfrontier/gerrit:2.16.x -> 2.16.22
  * openfrontier/gerrit:2.15.x -> 2.15.18
