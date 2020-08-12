@@ -14,7 +14,7 @@
 
 #### Alpine base
 
- * openfrontier/gerrit:3.0.x -> 3.0.8
+ * openfrontier/gerrit:3.0.x -> 3.0.12
 
 #### Debian base
 
