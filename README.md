@@ -14,7 +14,7 @@
 
 #### Alpine base
 
- * openfrontier/gerrit:3.1.x  -> 3.1.10
+ * openfrontier/gerrit:3.1.x  -> 3.1.12
 
 ## Migrate from ReviewDB to NoteDB
   Since Gerrit 2.16, [NoteDB](https://gerrit-review.googlesource.com/Documentation/note-db.html) is required to store accounts and groups data.
