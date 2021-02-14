@@ -366,7 +366,7 @@ if [ "$1" = "/gerrit-start.sh" ]; then
         OLD_GERRIT_VER="V$(cat ${GERRIT_VERSIONFILE})"
         GERRIT_VER="V${GERRIT_VERSION}"
         echo " have old gerrit version ${OLD_GERRIT_VER}"
-        if [ "${OLD_GERRIT_VER}" == "${GERRIT_VER}" ]; then
+        if [ "${OLD_GERRIT_VER}" = "${GERRIT_VER}" ]; then
           echo " same gerrit version, no upgrade necessary ${OLD_GERRIT_VER} == ${GERRIT_VER}"
           NEED_REINDEX=0
         else
